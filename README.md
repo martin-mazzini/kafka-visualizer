@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Apache-Kafka-Publish-Subscribe
 Implementación de un sistema de mensajería con Apache Kafka y Spring Kafka.
 
@@ -13,3 +14,7 @@ Sobre Kafka Spring: https://www.baeldung.com/spring-kafka
 # Apache-Kafka-Visualizer
 Aplicación que permite visualizar productores y consumidores de Kafka en acción. Permite simular variaciones en el throughput de acuerdo a la configuración del número de productores, consumidores, topics, y latencia en el envío y recepción de los mensajes. 
 >>>>>>> a37a8182a362973901b706595ae5602eace73051
+=======
+# Apache-Kafka-Visualizer-App
+Aplicación que permite visualizar productores y consumidores de Kafka en acción. Permite simular variaciones en el throughput de acuerdo a la configuración del número de productores, consumidores, topics, y latencia en el envío y recepción de los mensajes. (En desarrollo)
+>>>>>>> 88539275505c335574de4a649430b41781158cd8

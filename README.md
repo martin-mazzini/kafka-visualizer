@@ -7,3 +7,5 @@ La aplicación se basa en dos thread pools, uno de consumidores y otro de produc
 //TODO poder modificar latencia (con un Thread.sleep variable)
 
 //TODO front end, y conectarlo con websockets. 
+
+Para ver una implementación básica de un consumidor y productor con Apache Kafka: https://github.com/MMazzini1/Apache-Kafka-Publish-Subscribe

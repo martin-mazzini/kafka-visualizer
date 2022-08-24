@@ -10,17 +10,14 @@ import org.springframework.kafka.core.KafkaAdmin;
 import java.util.HashMap;
 import java.util.Map;
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 0ca2f94157c7365e65b82d509527e932458b1c25
 @Configuration
 public class KafkaTopicConfig {
 
 	@Value(value = "${kafka.bootstrapAddress}")
 	private String bootstrapAddress;
 
-<<<<<<< HEAD
+
 	@Value(value = "${kafka.topicOnePartition}")
 	private String topicOnePartition;
 
@@ -32,12 +29,12 @@ public class KafkaTopicConfig {
 	@Value(value = "${kafka.topicFivePartition}")
 	private String topicFivePartition;
 
-=======
+
 	@Value(value = "${kafka.testTopic}")
 	private String topicName;
 
 
->>>>>>> 0ca2f94157c7365e65b82d509527e932458b1c25
+
 	@Bean
 	public KafkaAdmin kafkaAdmin() {
 		Map<String, Object> configs = new HashMap<>();
@@ -47,7 +44,6 @@ public class KafkaTopicConfig {
 
 	@Bean
 	public NewTopic topic1() {
-<<<<<<< HEAD
 		return new NewTopic(topicOnePartition, 1, (short) 1);
 	}
 
@@ -61,8 +57,7 @@ public class KafkaTopicConfig {
 	@Bean
 	public NewTopic topic5() {
 		return new NewTopic(topicFivePartition, 5, (short) 1);
-=======
-		return new NewTopic(topicName, 3, (short) 1);
->>>>>>> 0ca2f94157c7365e65b82d509527e932458b1c25
+
+
 	}
 }

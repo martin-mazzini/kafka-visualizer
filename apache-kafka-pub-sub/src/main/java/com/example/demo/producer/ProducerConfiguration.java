@@ -16,10 +16,7 @@ import java.util.Map;
 @Configuration
 public class ProducerConfiguration {
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 0ca2f94157c7365e65b82d509527e932458b1c25
 	@Value(value = "${kafka.bootstrapAddress}")
 	private String KAFKA_BROKER;
 

@@ -31,6 +31,7 @@ public class ConsumerRunnable implements Runnable {
 
 		consumer.subscribe(Collections.singleton(topicName));
 
+
 		try {
 			while (!Thread.currentThread().isInterrupted()) {
 				ConsumerRecords<String, String> records =

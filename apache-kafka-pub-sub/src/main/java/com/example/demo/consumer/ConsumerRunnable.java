@@ -31,13 +31,14 @@ public class ConsumerRunnable implements Runnable {
 
 	@Override public void run() {
 
+		System.out.println("consumer: " + consumer.hashCode());
 		consumer.subscribe(Collections.singleton(topicName));
 
 
 		try {
 			while (!Thread.currentThread().isInterrupted()) {
 				ConsumerRecords<String, String> records =
-						consumer.poll(Duration.ofMillis(latency)); // new in Kafka 2.0.0
+						consumer.poll(Duration.ofMillis(latency));
 
 				for (ConsumerRecord<String, String> record : records) {
 					addMessage(record.value());

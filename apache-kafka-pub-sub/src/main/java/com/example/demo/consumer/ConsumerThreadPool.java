@@ -3,6 +3,8 @@ package com.example.demo.consumer;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -17,24 +19,19 @@ public class ConsumerThreadPool {
 	private Logger logger = LoggerFactory.getLogger(ConsumerThreadPool.class.getName());
 
 
-
-
-
-
-
-
 	private Integer runningThreads = 0;
 	private Long latency = 1000L;
 	@Value(value = "${kafka.topic}")
 	private String topicName;
 	private static final Integer MAX_CONSUMERS = 5;
 	private static ExecutorService threadPool = Executors.newFixedThreadPool(MAX_CONSUMERS);
-	private Deque<ConsumerRunnableReference> tasks = new LinkedList<>();
-	private KafkaConsumer<String, String> consumer;
+	private Deque<ConsumerRunnableReference> consumerRunnables = new LinkedList<>();
 
-	public ConsumerThreadPool(KafkaConsumer<String, String> consumer) {
-		this.consumer = consumer;
-	}
+
+	@Autowired
+	private BeanFactory beanFactory;
+
+
 
 
 	public synchronized void start(){
@@ -43,15 +40,15 @@ public class ConsumerThreadPool {
 	}
 
 	private void createConsumer() {
-		ConsumerRunnableReference task = createConsumerRunnable();
-		tasks.addFirst(task);
+		ConsumerRunnableReference consumerRunnable = createConsumerRunnable();
+		consumerRunnables.addFirst(consumerRunnable);
 		runningThreads++;
 	}
 
 
 	private ConsumerRunnableReference createConsumerRunnable() {
 		List<String> messages = new ArrayList<>();
-		ConsumerRunnable consumerRunnable = new ConsumerRunnable(messages, consumer, topicName, latency);
+		ConsumerRunnable consumerRunnable = new ConsumerRunnable(messages, beanFactory.getBean(KafkaConsumer.class), topicName, latency);
 		Future<?> future = threadPool.submit(consumerRunnable);
 		ConsumerRunnableReference task = new ConsumerRunnableReference(messages, future, consumerRunnable);
 		return task;
@@ -65,25 +62,25 @@ public class ConsumerThreadPool {
 		}else {
 			ConsumerRunnableReference task = createConsumerRunnable();
 			runningThreads = runningThreads + 1;
-			tasks.add(task);
+			consumerRunnables.add(task);
 			logger.info("ConsumerRunnable submit correcto");
 			return true;
 		}
 	}
 	public synchronized boolean removeConsumer(){
-		ConsumerRunnableReference poll = tasks.poll();
-		if (poll == null){
+		ConsumerRunnableReference consumer = consumerRunnables.poll();
+		if (consumer == null){
 			logger.info("No quedan mas consumers para parar");
 			return false;
 		}
-		poll.task.cancel(true);
+		consumer.getTask().cancel(true);
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			Thread.currentThread().interrupt();
 		}
-		if (poll.task.isCancelled()){
+		if (consumer.getTask().isCancelled()){
 			logger.info("ConsumerRunnable cancelado correctamente");
 			runningThreads = runningThreads - 1;
 			return true;
@@ -95,12 +92,12 @@ public class ConsumerThreadPool {
 
 
 	public synchronized List<List<String>> getMessages(){
-		return tasks.stream().map(task -> task.messages).collect(Collectors.toList());
+		return consumerRunnables.stream().map(task -> task.getMessages()).collect(Collectors.toList());
 
 	}
 
 	public synchronized String log() {
-		return String.format("Tasks size: %s, thread number: %s ", tasks.size(), runningThreads );
+		return String.format("Tasks size: %s, thread number: %s ", consumerRunnables.size(), runningThreads );
 	}
 
 

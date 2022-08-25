@@ -1,0 +1,2 @@
+-modelo threading
+https://kafka.apache.org/20/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html#multithreaded

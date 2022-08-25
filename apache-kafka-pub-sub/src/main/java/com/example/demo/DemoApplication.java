@@ -31,25 +31,21 @@ public class DemoApplication {
 
 
 
-	@Value(value = "${kafka.topicFivePartition}")
+	@Value(value = "${kafka.topic}")
 	private String topicName;
+
+	@Autowired
+	private ConsumerThreadPool consumerThreadPool;
 
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void doSomethingAfterStartup() {
 
-		logger.info("Cargando diccionario en memoria");
-		Dictionary.loadData();
 
-		logger.info("Inicializando thread pool de consumers");
-		ConsumerThreadPool.initialize(topicName, 1000L);
-		ConsumerThreadPool.getInstance().start();
-		logger.info("Inicializando thread pool de producers");
+		Dictionary.loadData();
+		consumerThreadPool.start();
 		ProducerThreadPool.initialize(template, topicName, 1000L);
 		ProducerThreadPool.getInstance().start();
-
-
-		System.out.println("hola");
 
 
 	}

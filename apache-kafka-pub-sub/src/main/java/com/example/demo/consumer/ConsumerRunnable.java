@@ -3,6 +3,7 @@ package com.example.demo.consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class ConsumerRunnable implements Runnable {
 
@@ -35,27 +37,20 @@ public class ConsumerRunnable implements Runnable {
 		try {
 			while (!Thread.currentThread().isInterrupted()) {
 				ConsumerRecords<String, String> records =
-						consumer.poll(Duration.ofMillis(100)); // new in Kafka 2.0.0
+						consumer.poll(Duration.ofMillis(latency)); // new in Kafka 2.0.0
 
 				for (ConsumerRecord<String, String> record : records) {
-					Thread.sleep(100);
-					//					logger.info((String.format("Consuming from thread %s" , Thread.currentThread().getName())));
-					//					logger.info("Key: " + record.key() + ", Value: " + record.value());
-					//					logger.info("Partition: " + record.partition() + ", Offset:" + record.offset());
 					addMessage(record.value());
 				}
 
 			}
 		} catch (WakeupException e) {
 			logger.info("Received shutdown signal!");
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			logger.info("Received shutdown signal!");
 		} finally {
 			try {
 				consumer.close();
 			}catch (Exception ex){
-				//do nothing, cierra con una excepcion x un bug
+				logger.error("Unexpected error in Consumer", ex);
 			}
 
 		}

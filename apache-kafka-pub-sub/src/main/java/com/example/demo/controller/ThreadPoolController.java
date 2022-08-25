@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.consumer.ConsumerThreadPool;
 import com.example.demo.producer.ProducerThreadPool;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,20 +10,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class ThreadPoolController {
 
 
+	@Autowired
+	private ConsumerThreadPool consumerThreadPool;
 
 
 	@GetMapping("/consumer/add")
 	public String addConsumer() {
-		ConsumerThreadPool.getInstance().addConsumer();
-		return ConsumerThreadPool.getInstance().log();
+		consumerThreadPool.addConsumer();
+		return consumerThreadPool.log();
 
 	}
 
 
 	@GetMapping("/consumer/remove")
 	public String removeConsumer() {
-		ConsumerThreadPool.getInstance().removeConsumer();
-		return ConsumerThreadPool.getInstance().log();
+		consumerThreadPool.removeConsumer();
+		return consumerThreadPool.log();
 
 
 	}

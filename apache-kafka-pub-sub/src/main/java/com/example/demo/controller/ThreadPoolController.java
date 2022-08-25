@@ -12,6 +12,8 @@ public class ThreadPoolController {
 
 	@Autowired
 	private ConsumerThreadPool consumerThreadPool;
+	@Autowired
+	private ProducerThreadPool producerThreadPool;
 
 
 	@GetMapping("/consumer/add")
@@ -33,16 +35,16 @@ public class ThreadPoolController {
 	@GetMapping("/producer/add")
 	public String addProducer() {
 
-		ProducerThreadPool.getInstance().addProducer();
-		return ProducerThreadPool.getInstance().log();
+		producerThreadPool.addProducer();
+		return producerThreadPool.log();
 
 	}
 
 
 	@GetMapping("/producer/remove")
 	public String removeProducer() {
-		ProducerThreadPool.getInstance().removeProducer();
-		return ProducerThreadPool.getInstance().log();
+		producerThreadPool.removeProducer();
+		return producerThreadPool.log();
 
 
 	}

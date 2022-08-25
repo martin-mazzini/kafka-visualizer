@@ -26,13 +26,11 @@ public class ConsumerThreadPool {
 	private static final Integer MAX_CONSUMERS = 5;
 	private static ExecutorService threadPool = Executors.newFixedThreadPool(MAX_CONSUMERS);
 	private Deque<ConsumerRunnableReference> consumerRunnables = new LinkedList<>();
-
-
-	@Autowired
 	private BeanFactory beanFactory;
 
-
-
+	public ConsumerThreadPool(BeanFactory beanFactory) {
+		this.beanFactory = beanFactory;
+	}
 
 	public synchronized void start(){
 		createConsumer();
@@ -49,7 +47,7 @@ public class ConsumerThreadPool {
 	private ConsumerRunnableReference createConsumerRunnable() {
 		List<String> messages = new ArrayList<>();
 		ConsumerRunnable consumerRunnable = new ConsumerRunnable(messages, beanFactory.getBean(KafkaConsumer.class), topicName, latency);
-		Future<?> future = threadPool.submit(consumerRunnable);
+		Future future = threadPool.submit(consumerRunnable);
 		ConsumerRunnableReference task = new ConsumerRunnableReference(messages, future, consumerRunnable);
 		return task;
 	}

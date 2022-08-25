@@ -50,7 +50,7 @@ public class ProducerRunnable implements Runnable {
                 }
             });
             try {
-                Thread.sleep(1000);
+                Thread.sleep(latency);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

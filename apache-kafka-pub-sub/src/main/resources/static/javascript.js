@@ -20,26 +20,50 @@ function fetchConsumerData() {
         )
 }
 
+function addConsumer(consumerId){
+    console.log("adding consumer " + consumerId)
+}
+
+function removeConsumer(consumerId){
+    console.log("removing consumer " + consumerId)
+}
+
+
 function renderConsumerData(data) {
 
     const consumerTables = document.querySelectorAll(".data_table")
-    console.log(consumerTables)
+
 
     const consumerDataMap = data.reduce(function(map, consumer) {
         map[consumer.consumerId] = consumer;
         return map;
     }, {});
-    console.log(consumerDataMap)
 
 
 
     consumerTables.forEach( consumerTable => {
 
         var consumerData = consumerDataMap[consumerTable.id]
-        console.log(consumerData)
+        const button = consumerTable.querySelector('.change_button')
+        console.log("Processing: " + consumerTable.id)
 
         if (consumerData == null){
-            console.log("inactive")
+
+            if (!consumerTable.classList.contains("inactive")) {
+
+                consumerTable.classList.add("inactive")
+                consumerTable.classList.remove("active")
+
+                button.innerHTML = "Add consumer"
+                button.classList.add("add_button")
+                button.classList.remove("delete_button")
+
+                button.addEventListener("click", function () {
+                    addConsumer(consumerTable.id)
+                })
+            }
+
+
         }else{
             const p = consumerTable
                 .querySelector('.records_divs')
@@ -49,8 +73,28 @@ function renderConsumerData(data) {
                 recordList = recordList + record +  " <br/> "
             }
             p.innerHTML = recordList
+
+
+            if (!consumerTable.classList.contains("active")){
+                consumerTable.classList.remove("inactive")
+                consumerTable.classList.add("active")
+
+                button.innerHTML = "Remove consumer"
+                button.classList.remove("add_button")
+                button.classList.add("delete_button")
+
+                button.addEventListener("click", function () {
+                    removeConsumer(consumerTable.id)
+                })
+            }
+
+
+
+
         }
     })
+
+
 
 }
 

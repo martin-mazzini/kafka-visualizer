@@ -12,6 +12,8 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 @Component
 public class ConsumerThreadPool {
@@ -25,6 +27,9 @@ public class ConsumerThreadPool {
 	private static ExecutorService threadPool = Executors.newFixedThreadPool(MAX_CONSUMERS);
 	private Deque<ConsumerRunnableReference> consumerRunnables = new LinkedList<>();
 	private BeanFactory beanFactory;
+
+
+
 
 	public ConsumerThreadPool(BeanFactory beanFactory) {
 		this.beanFactory = beanFactory;

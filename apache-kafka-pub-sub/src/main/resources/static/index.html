@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Distributed Search</title>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script type="text/javascript" src="javascript.js"></script>
+</head>
+<body>
+<div id="layout">
+    <div id="results">
+
+
+
+
+        <div style="display: flex;   align-content: space-between; width:1900px">
+
+
+            <div style="  flex: 1">
+                <table class="data_table" id="one">
+                    <tbody>
+                    <tr>
+                        <th colspan="2"><strong>Consumer 34</strong></th>
+                    </tr>
+                    <tr>
+                        <th><strong>Group</strong></th>
+                        <td>Jill</td>
+                    </tr>
+
+                    <tr class="records_tr">
+                        <td colspan="2">
+                            <div class="records_divs">
+                                <p>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word2 <br>
+                                    word2 <br>
+                                    word2 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word2 <br>
+                                    word2 <br>
+                                    word2 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word2 <br>
+                                    word2 <br>
+                                    word2 <br>
+                                </p>
+                            </div>
+
+                        </td>
+                    </tr>
+                    <tr class="partitions_row">
+                        <th><strong>Partitions</strong></th>
+                        <td>1,2</td>
+                    </tr>
+                    <tr class="latency_row">
+                        <th><strong>Latency</strong></th>
+                        <td>100</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div style=" flex: 1">
+                <table style="width:200px">
+                    <tbody>
+                    <tr>
+                        <th rowspan="1"><strong>Producer</strong></th>
+                    </tr>
+
+                    <tr>
+                        <td rowspan="1">
+                            <div style="overflow-y: scroll; height:200px;
+                  display: flex; flex-direction: column-reverse">
+                                <p>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word2 <br>
+                                    word2 <br>
+                                    word2 <br>
+                                </p>
+                            </div>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <th rowspan="1"><strong>Latency</strong></th>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div style=" flex: 1">
+                <table style="width:200px">
+                    <tbody>
+                    <tr>
+                        <th rowspan="1"><strong>Producer</strong></th>
+                    </tr>
+
+                    <tr>
+                        <td rowspan="1">
+                            <div style="overflow-y: scroll; height:200px;
+                  display: flex; flex-direction: column-reverse">
+                                <p>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word2 <br>
+                                    word2 <br>
+                                    word2 <br>
+                                </p>
+                            </div>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <th rowspan="1"><strong>Latency</strong></th>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style=" flex: 1">
+                <table style="width:200px">
+                    <tbody>
+                    <tr>
+                        <th rowspan="1"><strong>Producer</strong></th>
+                    </tr>
+
+                    <tr>
+                        <td rowspan="1">
+                            <div style="overflow-y: scroll; height:200px;
+                  display: flex; flex-direction: column-reverse">
+                                <p>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word2 <br>
+                                    word2 <br>
+                                    word2 <br>
+                                </p>
+                            </div>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <th rowspan="1"><strong>Latency</strong></th>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style=" flex: 1">
+                <table style="width:200px">
+                    <tbody>
+                    <tr>
+                        <th rowspan="1"><strong>Producer</strong></th>
+                    </tr>
+
+                    <tr>
+                        <td rowspan="1">
+                            <div style="overflow-y: scroll; height:200px;
+                  display: flex; flex-direction: column-reverse">
+                                <p>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word2 <br>
+                                    word2 <br>
+                                    word2 <br>
+                                </p>
+                            </div>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <th rowspan="1"><strong>Latency</strong></th>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style=" flex: 1">
+                <table style="width:200px">
+                    <tbody>
+                    <tr>
+                        <th rowspan="1"><strong>Producer</strong></th>
+                    </tr>
+
+                    <tr>
+                        <td rowspan="1">
+                            <div style="overflow-y: scroll; height:200px;
+                  display: flex; flex-direction: column-reverse">
+                                <p>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word1 <br>
+                                    word2 <br>
+                                    word2 <br>
+                                    word2 <br>
+                                </p>
+                            </div>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <th rowspan="1"><strong>Latency</strong></th>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+    <div id>
+
+</body>
+</html>

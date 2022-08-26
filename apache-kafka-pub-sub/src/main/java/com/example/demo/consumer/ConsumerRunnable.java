@@ -34,19 +34,6 @@ public class ConsumerRunnable implements Runnable {
 
         System.out.println("consumer: " + consumer.hashCode());
         consumer.subscribe(Collections.singleton(topicName));
-
-      /*  Set<TopicPartition> assignment = consumer.assignment();
-        while (assignment.size() == 0) {
-            try {
-                Thread.sleep(1);
-                //System.out.println("Waiting");
-                ConsumerRecords<String, String> records =
-                        consumer.poll(Duration.ofMillis(100));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-*/
         System.out.println("Subscription ended");
 
         try {
@@ -64,7 +51,9 @@ public class ConsumerRunnable implements Runnable {
                         addMessage(record.value());
                     }
                 }
-                //for letting other threads get acquire consumer lock
+
+                //for allowing other threads to acquire lock,
+                //todo replace with some fair locking mechanism
                 Thread.sleep(10);
             }
         } catch (WakeupException e) {

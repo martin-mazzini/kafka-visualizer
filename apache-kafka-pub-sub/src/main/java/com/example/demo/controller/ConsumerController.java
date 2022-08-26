@@ -37,7 +37,7 @@ public class ConsumerController {
 
 	}
 
-	@GetMapping("/consume/data")
+	@GetMapping("/consumer")
 	public List<ConsumerData> consumeData() {
 		return consumerThreadPool.getConsumerData().stream().collect(Collectors.toList());
 

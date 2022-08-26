@@ -153,7 +153,6 @@ function shortPollForProducerData() {
 
 
 function renderProducerData(producerData) {
-    console.log("rendering data: " + producerData)
     const producerTable = document.querySelector("#producer")
     const p = producerTable
         .querySelector('.records_divs')

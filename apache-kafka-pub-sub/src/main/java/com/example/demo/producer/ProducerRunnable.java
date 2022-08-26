@@ -12,6 +12,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ProducerRunnable implements Runnable {
 
@@ -21,6 +22,7 @@ public class ProducerRunnable implements Runnable {
     private String topicName;
     private volatile Long latency;
     private List<String> messages;
+    private final AtomicBoolean useKey = new AtomicBoolean(true);
 
 
     public ProducerRunnable(KafkaProducer<String, String> producer, String topicName, Long latency, List<String> messages) {
@@ -37,8 +39,17 @@ public class ProducerRunnable implements Runnable {
 
             try {
                 String randomWord = Dictionary.getRandomWord();
-                ProducerRecord<String, String> producerRecord =
-                        new ProducerRecord<>(topicName, randomWord);
+
+
+                ProducerRecord<String, String> producerRecord;
+                if (useKey.get()) {
+                    String key = randomWord.substring(0,1);
+                    producerRecord = new ProducerRecord<>(topicName, key, randomWord);
+                } else {
+                    producerRecord = new ProducerRecord<>(topicName, randomWord);
+                }
+
+
                 producer.send(producerRecord, (metadata, e) -> {
                     if (e == null) {
                    /* logger.info("Received new metadata. \n" +
@@ -69,10 +80,10 @@ public class ProducerRunnable implements Runnable {
 
     public ProducerData getData() {
         ProducerData producerData = new ProducerData();
-        synchronized (this){
+        synchronized (this) {
             producerData.setRecords(new ArrayList<>(messages));
         }
-       return producerData;
+        return producerData;
     }
 }
 

@@ -41,7 +41,12 @@ public class Dictionary {
 		int size = words.size();
 		int randomLine = random.nextInt(size);
 		String randomWord = words.get(randomLine);
-		return randomWord;
+		return getRandomKey() + "-" + randomWord;
+	}
+
+	public static Integer getRandomKey() {
+		int randomKey = random.nextInt(4);
+		return randomKey;
 	}
 
 }

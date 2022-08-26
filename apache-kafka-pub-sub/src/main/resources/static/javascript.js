@@ -52,22 +52,6 @@ function renderConsumerData(data) {
         }
     })
 
-
-/*
-    data.forEach( consumer => {
-
-        const p = document.querySelector("#" + consumer.consumerId)
-            .querySelector('.records_divs')
-            .querySelector('p')
-
-        var recordList = ""
-        for (let record of consumer.records) {
-            recordList = recordList + record +  " <br/> "
-        }
-
-        p.innerHTML = recordList
-
-    })*/
 }
 
 

@@ -45,6 +45,24 @@ button:hover {
 }
 
 
+.delete_button {
+  background-color: #e02525;
+}
+
+.delete_button:hover {
+  background-color: #ff0000;
+  cursor: pointer;
+}
+
+.add_button {
+  background-color: #43d00f;
+}
+
+.add_button:hover {
+  background-color: #4fff0e;
+  cursor: pointer;
+}
+
 
 #banner-message.alt button {
   background: #fff;
@@ -66,6 +84,19 @@ table {
   border-collapse: collapse;
 /*  width: 100%;*/
 }
+
+.inactive td, .inactive th, .inactive tr{
+  background-color: rgba(239, 231, 231, 0.23);
+}
+
+
+
+td, th {
+  border: 2px solid #000000;
+  text-align: center;
+  padding:6px 20px;
+}
+
 
 td, th {
   border: 2px solid #000000;

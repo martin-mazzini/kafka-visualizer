@@ -36,9 +36,9 @@ public class ConsumerRunnable implements Runnable {
     public void run() {
 
 
-        System.out.println("consumer: " + consumer.hashCode());
+        System.out.println("Consumer created with THREAD NAME: " + Thread.currentThread().getName());
         consumer.subscribe(Collections.singleton(topicName));
-        System.out.println("Subscription ended");
+
 
         try {
             while (true) {
@@ -52,7 +52,7 @@ public class ConsumerRunnable implements Runnable {
                     ConsumerRecords<String, String> records =
                             consumer.poll(Duration.ofMillis(100));
                     for (ConsumerRecord<String, String> record : records) {
-                        System.out.println("polling from thread" + Thread.currentThread().getId());
+                        // System.out.println("polling from thread" + Thread.currentThread().getId());
                         addMessage(record.value());
                     }
                 }
@@ -66,16 +66,18 @@ public class ConsumerRunnable implements Runnable {
         } catch (InterruptedException interruptedException) {
             logger.info("Removing consumer, interrupted exceptio");
         } catch(InterruptException e){
-            logger.error("Removing consumer, kafka interrupt exception ", e);
+            logger.info("Removing consumer, kafka interrupt exception ");
         }  finally {
             try {
                 logger.info("Finally clause, Removing consumer");
                 consumer.close();
             } catch (Exception ex) {
-                logger.error("Unexpected error in Consumer", ex);
+                logger.info("Exception closing consumer", ex);
             }
         }
-        System.out.println("LOOP EXITED");
+
+
+        System.out.println("LOOP EXITED for thread: " + Thread.currentThread().getId());
 
 
     }

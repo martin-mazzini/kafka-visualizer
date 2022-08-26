@@ -37,6 +37,7 @@ public class ConsumerConfiguration {
         KafkaConsumer<String, String> consumer;
         Properties properties = new Properties();
 
+
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,KAFKA_BROKER);
         properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());

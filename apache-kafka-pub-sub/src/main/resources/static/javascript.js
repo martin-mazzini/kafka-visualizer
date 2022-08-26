@@ -19,6 +19,7 @@ function fetchConsumerData() {
 }
 
 function addConsumer(consumerId) {
+    console.log("adding consumerId " + consumerId)
     return fetch("/consumer/" + consumerId,
         {
             method: 'PUT',
@@ -27,6 +28,7 @@ function addConsumer(consumerId) {
 }
 
 function removeConsumer(consumerId) {
+    console.log("removing consumerId " + consumerId)
     return fetch("/consumer/" + consumerId,
         {
             method: 'DELETE',
@@ -50,7 +52,7 @@ function renderConsumerData(data) {
 
         var consumerData = consumerDataMap[consumerTable.id]
         const button = consumerTable.querySelector('.change_button')
-        console.log("Processing: " + consumerTable.id)
+        // console.log("Processing: " + consumerTable.id)
 
         if (consumerData == null) {
 
@@ -63,7 +65,8 @@ function renderConsumerData(data) {
                 button.classList.add("add_button")
                 button.classList.remove("delete_button")
 
-                button.addEventListener("click", function () {
+                let cloneButton =  removeListeners(button)
+                cloneButton.addEventListener("click", function () {
                     addConsumer(consumerTable.id)
                 })
             }
@@ -93,7 +96,9 @@ function renderConsumerData(data) {
                 button.classList.remove("add_button")
                 button.classList.add("delete_button")
 
-                button.addEventListener("click", function () {
+
+                let cloneButton =  removeListeners(button)
+                cloneButton.addEventListener("click", function () {
                     removeConsumer(consumerTable.id)
                 })
             }
@@ -105,10 +110,17 @@ function renderConsumerData(data) {
 
 }
 
+function removeListeners(oldBtnElement) {
+    const newBtnElement = oldBtnElement.cloneNode(true);
+    oldBtnElement.parentNode.replaceChild(newBtnElement, oldBtnElement);
+    console.log("Removed all listners")
+    return newBtnElement;
+}
+
 
 function shortPollForConsumerData() {
     const interval = setInterval(function () {
         fetchConsumerData()
-    }, 2000);
+    }, 200);
 
 }

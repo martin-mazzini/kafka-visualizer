@@ -1,4 +1,3 @@
-
 console.log("Hi4")
 shortPollForConsumerData()
 
@@ -7,8 +6,7 @@ function fetchConsumerData() {
         .then((response) => {
             if (response.ok) {
                 return response.json();
-            }
-            else {
+            } else {
                 throw `error with status ${response.status}`;
             }
         })
@@ -20,12 +18,20 @@ function fetchConsumerData() {
         )
 }
 
-function addConsumer(consumerId){
-    console.log("adding consumer " + consumerId)
+function addConsumer(consumerId) {
+    return fetch("/consumer/" + consumerId,
+        {
+            method: 'PUT',
+        }
+    )
 }
 
-function removeConsumer(consumerId){
-    console.log("removing consumer " + consumerId)
+function removeConsumer(consumerId) {
+    return fetch("/consumer/" + consumerId,
+        {
+            method: 'DELETE',
+        }
+    )
 }
 
 
@@ -34,20 +40,19 @@ function renderConsumerData(data) {
     const consumerTables = document.querySelectorAll(".data_table")
 
 
-    const consumerDataMap = data.reduce(function(map, consumer) {
+    const consumerDataMap = data.reduce(function (map, consumer) {
         map[consumer.consumerId] = consumer;
         return map;
     }, {});
 
 
-
-    consumerTables.forEach( consumerTable => {
+    consumerTables.forEach(consumerTable => {
 
         var consumerData = consumerDataMap[consumerTable.id]
         const button = consumerTable.querySelector('.change_button')
         console.log("Processing: " + consumerTable.id)
 
-        if (consumerData == null){
+        if (consumerData == null) {
 
             if (!consumerTable.classList.contains("inactive")) {
 
@@ -64,16 +69,15 @@ function renderConsumerData(data) {
             }
 
 
-        }else{
+        } else {
             const p = consumerTable
                 .querySelector('.records_divs')
                 .querySelector('p')
             let recordList = ""
             for (let record of consumerData.records) {
-                recordList = recordList + record +  " <br/> "
+                recordList = recordList + record + " <br/> "
             }
             p.innerHTML = recordList
-
 
 
             const partitions = consumerTable
@@ -81,7 +85,7 @@ function renderConsumerData(data) {
             partitions.innerHTML = consumerData.partitions
 
 
-            if (!consumerTable.classList.contains("active")){
+            if (!consumerTable.classList.contains("active")) {
                 consumerTable.classList.remove("inactive")
                 consumerTable.classList.add("active")
 
@@ -95,11 +99,8 @@ function renderConsumerData(data) {
             }
 
 
-
-
         }
     })
-
 
 
 }

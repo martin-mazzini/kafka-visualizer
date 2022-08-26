@@ -4,6 +4,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.errors.InterruptException;
 import org.apache.kafka.common.errors.WakeupException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,7 @@ public class ConsumerRunnable implements Runnable {
             while (true) {
 
                 if (Thread.currentThread().isInterrupted()) {
+                    System.out.println("thread was interrupted");
                     throw new InterruptedException();
                 }
 
@@ -50,7 +52,7 @@ public class ConsumerRunnable implements Runnable {
                     ConsumerRecords<String, String> records =
                             consumer.poll(Duration.ofMillis(100));
                     for (ConsumerRecord<String, String> record : records) {
-                        System.out.println("ADDING TO LIST: " + record.value());
+                        System.out.println("polling from thread" + Thread.currentThread().getId());
                         addMessage(record.value());
                     }
                 }
@@ -62,15 +64,18 @@ public class ConsumerRunnable implements Runnable {
         } catch (WakeupException e) {
             logger.info("Received shutdown signal!");
         } catch (InterruptedException interruptedException) {
-            logger.info("Removing consumer");
-        } finally {
+            logger.info("Removing consumer, interrupted exceptio");
+        } catch(InterruptException e){
+            logger.error("Removing consumer, kafka interrupt exception ", e);
+        }  finally {
             try {
+                logger.info("Finally clause, Removing consumer");
                 consumer.close();
             } catch (Exception ex) {
                 logger.error("Unexpected error in Consumer", ex);
             }
-
         }
+        System.out.println("LOOP EXITED");
 
 
     }

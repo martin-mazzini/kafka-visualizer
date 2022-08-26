@@ -22,7 +22,7 @@ public class ConsumerThreadPool {
 	private String topicName;
 	private static final Integer MAX_CONSUMERS = 5;
 	private static ExecutorService threadPool = Executors.newFixedThreadPool(MAX_CONSUMERS);
-	private Deque<ConsumerRunnableReference> consumerRunnables = new LinkedList<>();
+	private Map<String, ConsumerRunnableReference> consumerRunnables = new HashMap<>();
 	private BeanFactory beanFactory;
 
 
@@ -39,7 +39,7 @@ public class ConsumerThreadPool {
 
 	private synchronized void createConsumer(String consumerId) {
 		ConsumerRunnableReference consumerRunnable = createConsumerRunnable(consumerId);
-		consumerRunnables.addFirst(consumerRunnable);
+		consumerRunnables.put(consumerId, consumerRunnable);
 		runningThreads++;
 	}
 
@@ -52,32 +52,33 @@ public class ConsumerThreadPool {
 	}
 
 
-	public synchronized boolean addConsumer(){
+	public synchronized boolean addConsumer(String id){
 		if (runningThreads == MAX_CONSUMERS){
 			logger.info("Max number of Consumers reached");
 			return false;
 		}else {
-			createConsumer("one");
+			createConsumer(id);
 			logger.info("Consumer created succesfully");
 			return true;
 		}
 	}
 
 
-	public synchronized boolean removeConsumer(){
-		ConsumerRunnableReference consumer = consumerRunnables.poll();
+	public synchronized boolean removeConsumer(String consumerId){
+		ConsumerRunnableReference consumer = consumerRunnables.get(consumerId);
 		if (consumer == null){
 			logger.info("No tasks for cancellation");
 			return false;
 		}
 		consumer.getTask().cancel(true);
+		consumerRunnables.remove(consumerId);
 		runningThreads--;
 		return true;
 	}
 
 
 	public synchronized List<List<String>> getMessages(){
-		return consumerRunnables.stream().map(task -> task.getMessages()).collect(Collectors.toList());
+		return consumerRunnables.values().stream().map(task -> task.getMessages()).collect(Collectors.toList());
 
 	}
 
@@ -87,6 +88,6 @@ public class ConsumerThreadPool {
 
 
 	public List<ConsumerData> getConsumerData() {
-		return consumerRunnables.stream().map(task -> task.getConsumerData()).collect(Collectors.toList());
+		return consumerRunnables.values().stream().map(task -> task.getConsumerData()).collect(Collectors.toList());
 	}
 }

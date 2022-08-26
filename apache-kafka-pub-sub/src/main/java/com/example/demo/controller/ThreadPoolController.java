@@ -3,8 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.consumer.ConsumerThreadPool;
 import com.example.demo.producer.ProducerThreadPool;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController("")
 public class ThreadPoolController {
@@ -14,17 +13,17 @@ public class ThreadPoolController {
 	@Autowired
 	private ProducerThreadPool producerThreadPool;
 
-	@GetMapping("/consumer/add")
-	public String addConsumer() {
-		consumerThreadPool.addConsumer();
+	@PutMapping("/consumer/{id}")
+	public String addConsumer(@PathVariable String id) {
+		consumerThreadPool.addConsumer(id);
 		return consumerThreadPool.log();
 
 	}
 
 
-	@GetMapping("/consumer/remove")
-	public String removeConsumer() {
-		consumerThreadPool.removeConsumer();
+	@DeleteMapping("/consumer/{id}")
+	public String removeConsumer(@PathVariable String id) {
+		consumerThreadPool.removeConsumer(id);
 		return consumerThreadPool.log();
 
 

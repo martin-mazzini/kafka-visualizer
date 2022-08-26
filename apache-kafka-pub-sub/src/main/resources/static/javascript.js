@@ -75,6 +75,12 @@ function renderConsumerData(data) {
             p.innerHTML = recordList
 
 
+
+            const partitions = consumerTable
+                .querySelector('.partitions_div')
+            partitions.innerHTML = consumerData.partitions
+
+
             if (!consumerTable.classList.contains("active")){
                 consumerTable.classList.remove("inactive")
                 consumerTable.classList.add("active")

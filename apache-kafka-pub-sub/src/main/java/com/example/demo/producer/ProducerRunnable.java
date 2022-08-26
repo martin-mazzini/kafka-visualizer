@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProducerRunnable implements Runnable {
@@ -64,6 +65,14 @@ public class ProducerRunnable implements Runnable {
 
     public synchronized void changeLatency(Long newLatency) {
         this.latency = newLatency;
+    }
+
+    public ProducerData getData() {
+        ProducerData producerData = new ProducerData();
+        synchronized (this){
+            producerData.setRecords(new ArrayList<>(messages));
+        }
+       return producerData;
     }
 }
 

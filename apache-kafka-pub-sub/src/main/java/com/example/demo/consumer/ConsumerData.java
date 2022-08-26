@@ -13,8 +13,8 @@ public class ConsumerData {
     private String consumerGroup;
     private Long latency;
 
-
     public void addPartition(int partition) {
         this.partitions.add(partition);
     }
+
 }

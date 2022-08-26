@@ -1,22 +1,20 @@
 package com.example.demo.producer;
 
+import com.example.demo.consumer.ConsumerData;
+
 import java.util.List;
 import java.util.concurrent.Future;
 
 class ProducerRunnableReference {
-    private List<String> messages;
+
     private Future task;
     private ProducerRunnable producerRunnable;
 
-    public ProducerRunnableReference(List<String> messages, Future task, ProducerRunnable producerRunnable) {
-        this.messages = messages;
+    public ProducerRunnableReference(Future task, ProducerRunnable producerRunnable) {
         this.task = task;
         this.producerRunnable = producerRunnable;
     }
 
-    public synchronized List<String> getMessages() {
-        return messages;
-    }
 
     public synchronized Future getTask() {
         return task;
@@ -25,4 +23,12 @@ class ProducerRunnableReference {
     public synchronized ProducerRunnable getProducerRunnable() {
         return producerRunnable;
     }
+
+
+    public ProducerData getProducerData() {
+        return producerRunnable.getData();
+    }
+
+
+
 }

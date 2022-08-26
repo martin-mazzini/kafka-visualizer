@@ -37,7 +37,6 @@ public class ProducerThreadPool {
 
 	public synchronized void start() {
 		createProducer();
-		createProducer();
 	}
 
 	private synchronized void createProducer() {
@@ -50,7 +49,7 @@ public class ProducerThreadPool {
 		List<String> messages = new ArrayList<>();
 		ProducerRunnable producerRunnable = new ProducerRunnable(producer, topicName, latency, messages);
 		Future<?> future = threadPool.submit(producerRunnable);
-		ProducerRunnableReference task = new ProducerRunnableReference(messages, future, producerRunnable);
+		ProducerRunnableReference task = new ProducerRunnableReference(future, producerRunnable);
 		return task;
 	}
 
@@ -88,22 +87,10 @@ public class ProducerThreadPool {
 	}
 
 
-	public synchronized void getMessage(){
-		List<List<String>> messages = producerRunnables.stream().map(task -> task.getMessages()).collect(Collectors.toList());
+
+
+	public synchronized List<ProducerData> getProducerData() {
+		return producerRunnables.stream().map(task -> task.getProducerData()).collect(Collectors.toList());
 	}
-
-
-
-	public synchronized List<List<String>> getMessages(){
-		return producerRunnables.stream().map(task -> task.getMessages()).collect(Collectors.toList());
-
-	}
-
-	public synchronized String log() {
-		return String.format("Tasks size: %s, thread number: %s ", producerRunnables.size(), runningThreads );
-	}
-
-
-
 
 }

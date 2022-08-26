@@ -1,5 +1,6 @@
-console.log("Hi4")
+console.log("Hi")
 shortPollForConsumerData()
+shortPollForProducerData()
 
 function fetchConsumerData() {
     return fetch("/consumer")
@@ -14,6 +15,24 @@ function fetchConsumerData() {
         .catch(
             error => {
                 console.log("Error fetch consumer data: " + error)
+            }
+        )
+}
+
+
+function fetchProducerData() {
+    return fetch("/producer")
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw `error with status ${response.status}`;
+            }
+        })
+        .then(json => renderProducerData(json))
+        .catch(
+            error => {
+                console.log("Error fetch producer data: " + error)
             }
         )
 }
@@ -65,7 +84,7 @@ function renderConsumerData(data) {
                 button.classList.add("add_button")
                 button.classList.remove("delete_button")
 
-                let cloneButton =  removeListeners(button)
+                let cloneButton = removeListeners(button)
                 cloneButton.addEventListener("click", function () {
                     addConsumer(consumerTable.id)
                 })
@@ -97,7 +116,7 @@ function renderConsumerData(data) {
                 button.classList.add("delete_button")
 
 
-                let cloneButton =  removeListeners(button)
+                let cloneButton = removeListeners(button)
                 cloneButton.addEventListener("click", function () {
                     removeConsumer(consumerTable.id)
                 })
@@ -106,9 +125,8 @@ function renderConsumerData(data) {
 
         }
     })
-
-
 }
+
 
 function removeListeners(oldBtnElement) {
     const newBtnElement = oldBtnElement.cloneNode(true);
@@ -124,3 +142,31 @@ function shortPollForConsumerData() {
     }, 200);
 
 }
+
+
+function shortPollForProducerData() {
+    const interval = setInterval(function () {
+        fetchProducerData()
+    }, 200);
+
+}
+
+
+function renderProducerData(producerData) {
+    console.log("rendering data: " + producerData)
+    const producerTable = document.querySelector("#producer")
+    const p = producerTable
+        .querySelector('.records_divs')
+        .querySelector('p')
+    let recordList = ""
+
+    //single producer at the moment
+    let oneProducerData = producerData[0]
+    for (let record of oneProducerData.records) {
+        recordList = recordList + record + " <br/> "
+    }
+    p.innerHTML = recordList
+}
+
+
+

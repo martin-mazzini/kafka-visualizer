@@ -76,16 +76,6 @@ public class ConsumerThreadPool {
     }
 
 
-    public synchronized List<List<String>> getMessages() {
-        return consumerRunnables.values().stream().map(task -> task.getMessages()).collect(Collectors.toList());
-
-    }
-
-    public synchronized String log() {
-        return String.format("Tasks size: %s, thread number: %s ", consumerRunnables.size(), runningThreads);
-    }
-
-
     public synchronized List<ConsumerData> getConsumerData() {
         return consumerRunnables.values().stream().map(task -> task.getConsumerData()).collect(Collectors.toList());
     }

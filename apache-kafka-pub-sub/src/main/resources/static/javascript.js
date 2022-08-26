@@ -1,12 +1,11 @@
 
 console.log("Hi4")
-fetchConsumerData()
+shortPollForConsumerData()
 
 function fetchConsumerData() {
-    console.log("fetch")
     return fetch("/consumer")
         .then((response) => {
-            if (response.ok) {   // *** This can be just `if (response.ok) {`
+            if (response.ok) {
                 return response.json();
             }
             else {
@@ -22,10 +21,59 @@ function fetchConsumerData() {
 }
 
 function renderConsumerData(data) {
-    console.log(data)
-    data.forEach( consumer => {
-        console.log(consumer)
 
+    const consumerTables = document.querySelectorAll(".data_table")
+    console.log(consumerTables)
+
+    const consumerDataMap = data.reduce(function(map, consumer) {
+        map[consumer.consumerId] = consumer;
+        return map;
+    }, {});
+    console.log(consumerDataMap)
+
+
+
+    consumerTables.forEach( consumerTable => {
+
+        var consumerData = consumerDataMap[consumerTable.id]
+        console.log(consumerData)
+
+        if (consumerData == null){
+            console.log("inactive")
+        }else{
+            const p = consumerTable
+                .querySelector('.records_divs')
+                .querySelector('p')
+            let recordList = ""
+            for (let record of consumerData.records) {
+                recordList = recordList + record +  " <br/> "
+            }
+            p.innerHTML = recordList
+        }
     })
+
+
+/*
+    data.forEach( consumer => {
+
+        const p = document.querySelector("#" + consumer.consumerId)
+            .querySelector('.records_divs')
+            .querySelector('p')
+
+        var recordList = ""
+        for (let record of consumer.records) {
+            recordList = recordList + record +  " <br/> "
+        }
+
+        p.innerHTML = recordList
+
+    })*/
+}
+
+
+function shortPollForConsumerData() {
+    const interval = setInterval(function () {
+        fetchConsumerData()
+    }, 2000);
 
 }

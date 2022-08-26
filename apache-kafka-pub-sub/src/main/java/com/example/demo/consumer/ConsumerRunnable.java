@@ -17,15 +17,18 @@ import java.util.Set;
 public class ConsumerRunnable implements Runnable {
 
     private final Long latency;
+    private String consumerId;
     private KafkaConsumer<String, String> consumer;
     private List<String> messages = Collections.synchronizedList(new ArrayList<>());
     private String topicName;
     private Logger logger = LoggerFactory.getLogger(ConsumerRunnable.class.getName());
 
-    public ConsumerRunnable(KafkaConsumer consumer, String topicName, Long latency) {
+
+    public ConsumerRunnable(KafkaConsumer consumer, String topicName, Long latency, String consumerId) {
         this.consumer = consumer;
         this.topicName = topicName;
         this.latency = latency;
+        this.consumerId = consumerId;
     }
 
     @Override
@@ -96,11 +99,13 @@ public class ConsumerRunnable implements Runnable {
                 consumerData.addPartition(partition);
             }
             consumerData.setConsumerGroup(consumer.groupMetadata().groupId());
-            consumerData.setConsumerId(consumer.groupMetadata().memberId());
+
+            //consumerData.setMemberId(consumer.groupMetadata().memberId());
         }
 
 
         consumerData.setLatency(latency);
+        consumerData.setConsumerId(consumerId);
 
 
         return consumerData;

@@ -4,7 +4,6 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -12,8 +11,6 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 @Component
 public class ConsumerThreadPool {
@@ -36,19 +33,19 @@ public class ConsumerThreadPool {
 	}
 
 	public synchronized void start(){
-		createConsumer();
-		createConsumer();
+		createConsumer("one");
+		createConsumer("two");
 	}
 
-	private synchronized void createConsumer() {
-		ConsumerRunnableReference consumerRunnable = createConsumerRunnable();
+	private synchronized void createConsumer(String consumerId) {
+		ConsumerRunnableReference consumerRunnable = createConsumerRunnable(consumerId);
 		consumerRunnables.addFirst(consumerRunnable);
 		runningThreads++;
 	}
 
 
-	private ConsumerRunnableReference createConsumerRunnable() {
-		ConsumerRunnable consumerRunnable = new ConsumerRunnable(beanFactory.getBean(KafkaConsumer.class), topicName, latency);
+	private ConsumerRunnableReference createConsumerRunnable(String consumerId) {
+		ConsumerRunnable consumerRunnable = new ConsumerRunnable(beanFactory.getBean(KafkaConsumer.class), topicName, latency, consumerId);
 		Future future = threadPool.submit(consumerRunnable);
 		ConsumerRunnableReference task = new ConsumerRunnableReference(future, consumerRunnable);
 		return task;
@@ -60,7 +57,7 @@ public class ConsumerThreadPool {
 			logger.info("Max number of Consumers reached");
 			return false;
 		}else {
-			createConsumer();
+			createConsumer("one");
 			logger.info("Consumer created succesfully");
 			return true;
 		}

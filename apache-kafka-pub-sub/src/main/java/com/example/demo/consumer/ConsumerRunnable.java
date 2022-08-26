@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -17,24 +18,36 @@ public class ConsumerRunnable implements Runnable {
 
     private final Long latency;
     private KafkaConsumer<String, String> consumer;
-    private List<String> messages;
+    private List<String> messages = Collections.synchronizedList(new ArrayList<>());
     private String topicName;
     private Logger logger = LoggerFactory.getLogger(ConsumerRunnable.class.getName());
 
-    public ConsumerRunnable(List<String> messages, KafkaConsumer consumer, String topicName, Long latency) {
+    public ConsumerRunnable(KafkaConsumer consumer, String topicName, Long latency) {
         this.consumer = consumer;
-        this.messages = messages;
         this.topicName = topicName;
         this.latency = latency;
-
     }
 
     @Override
     public void run() {
 
+
         System.out.println("consumer: " + consumer.hashCode());
         consumer.subscribe(Collections.singleton(topicName));
 
+      /*  Set<TopicPartition> assignment = consumer.assignment();
+        while (assignment.size() == 0) {
+            try {
+                Thread.sleep(1);
+                //System.out.println("Waiting");
+                ConsumerRecords<String, String> records =
+                        consumer.poll(Duration.ofMillis(100));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+*/
+        System.out.println("Subscription ended");
 
         try {
             while (true) {
@@ -43,13 +56,16 @@ public class ConsumerRunnable implements Runnable {
                     throw new InterruptedException();
                 }
 
-                ConsumerRecords<String, String> records =
-                        consumer.poll(Duration.ofMillis(latency));
-
-                for (ConsumerRecord<String, String> record : records) {
-                    addMessage(record.value());
+                synchronized (consumer) {
+                    ConsumerRecords<String, String> records =
+                            consumer.poll(Duration.ofMillis(100));
+                    for (ConsumerRecord<String, String> record : records) {
+                        System.out.println("ADDING TO LIST: " + record.value());
+                        addMessage(record.value());
+                    }
                 }
-
+                //for letting other threads get acquire consumer lock
+                Thread.sleep(10);
             }
         } catch (WakeupException e) {
             logger.info("Received shutdown signal!");
@@ -64,10 +80,75 @@ public class ConsumerRunnable implements Runnable {
 
         }
 
+
     }
 
-    private synchronized void addMessage(String value) {
+    private void addMessage(String value) {
         this.messages.add(value);
+
     }
 
+    public List<String> getMessages() {
+        return new ArrayList<>(messages);
+
+    }
+
+
+    public ConsumerData getData() {
+
+        ConsumerData consumerData = new ConsumerData();
+        consumerData.setRecords(getMessages());
+
+
+        synchronized (consumer) {
+            Set<TopicPartition> assignment = consumer.assignment();
+            for (TopicPartition topicPartition : assignment) {
+                int partition = topicPartition.partition();
+                consumerData.addPartition(partition);
+            }
+            consumerData.setConsumerGroup(consumer.groupMetadata().groupId());
+            consumerData.setConsumerId(consumer.groupMetadata().memberId());
+        }
+
+
+        consumerData.setLatency(latency);
+
+
+        return consumerData;
+
+
+    }
+
+
+    /**
+     * public class KafkaConsumerRunner implements Runnable {
+     *      private final AtomicBoolean closed = new AtomicBoolean(false);
+     *      private final KafkaConsumer consumer;
+     *
+     *      public KafkaConsumerRunner(KafkaConsumer consumer) {
+     *        this.consumer = consumer;
+     *      }
+     *
+     *      public void run() {
+     *          try {
+     *              consumer.subscribe(Arrays.asList("topic"));
+     *              while (!closed.get()) {
+     *                  ConsumerRecords records = consumer.poll(Duration.ofMillis(10000));
+     *                  // Handle new records
+     *              }
+     *          } catch (WakeupException e) {
+     *              // Ignore exception if closing
+     *              if (!closed.get()) throw e;
+     *          } finally {
+     *              consumer.close();
+     *          }
+     *      }
+     *
+     *      // Shutdown hook which can be called from a separate thread
+     *      public void shutdown() {
+     *          closed.set(true);
+     *          consumer.wakeup();
+     *      }
+     *  }
+     */
 }

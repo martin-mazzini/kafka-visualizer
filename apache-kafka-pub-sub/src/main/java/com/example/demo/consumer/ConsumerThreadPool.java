@@ -43,10 +43,9 @@ public class ConsumerThreadPool {
 
 
 	private ConsumerRunnableReference createConsumerRunnable() {
-		List<String> messages = new ArrayList<>();
-		ConsumerRunnable consumerRunnable = new ConsumerRunnable(messages, beanFactory.getBean(KafkaConsumer.class), topicName, latency);
+		ConsumerRunnable consumerRunnable = new ConsumerRunnable(beanFactory.getBean(KafkaConsumer.class), topicName, latency);
 		Future future = threadPool.submit(consumerRunnable);
-		ConsumerRunnableReference task = new ConsumerRunnableReference(messages, future, consumerRunnable);
+		ConsumerRunnableReference task = new ConsumerRunnableReference(future, consumerRunnable);
 		return task;
 	}
 
@@ -85,7 +84,7 @@ public class ConsumerThreadPool {
 	}
 
 
-
-
-
+	public List<ConsumerData> getConsumerData() {
+		return consumerRunnables.stream().map(task -> task.getConsumerData()).collect(Collectors.toList());
+	}
 }

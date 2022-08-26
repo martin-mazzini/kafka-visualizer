@@ -5,30 +5,24 @@ import java.util.concurrent.Future;
 
 class ConsumerRunnableReference {
 
-    private List<String> messages;
     private Future task;
     private ConsumerRunnable consumerRunnable;
 
-    public ConsumerRunnableReference(List<String> messages, Future task, ConsumerRunnable consumerRunnable) {
-        this.messages = messages;
+    public ConsumerRunnableReference(Future task, ConsumerRunnable consumerRunnable) {
         this.task = task;
         this.consumerRunnable = consumerRunnable;
     }
 
-    public synchronized List<String> getMessages() {
-        return messages;
+    public List<String> getMessages() {
+        return consumerRunnable.getMessages();
     }
-
-
 
     public synchronized Future getTask() {
         return task;
     }
 
 
-    public ConsumerRunnable getConsumerRunnable() {
-        return consumerRunnable;
+    public ConsumerData getConsumerData() {
+        return consumerRunnable.getData();
     }
-
-
 }

@@ -63,6 +63,7 @@ public class DemoApplication {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+        System.out.println("Topic created succesfully");
 
         Dictionary.loadData();
         consumerThreadPool.start();

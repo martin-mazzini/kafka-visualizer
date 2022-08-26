@@ -7,6 +7,8 @@ services:
       context: .
     ports:
       - "8080:8080"
+    depends_on:
+      - kafka
   zookeeper:
     image: 'bitnami/zookeeper:latest'
     environment:
@@ -14,6 +16,7 @@ services:
       -  ALLOW_PLAINTEXT_LISTENER=yes
   kafka:
     image:  'bitnami/kafka:latest'
+    restart: always
     ports:
      - '9093:9093'
     environment:

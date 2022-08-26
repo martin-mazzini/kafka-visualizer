@@ -17,8 +17,6 @@ import java.util.stream.Collectors;
 public class ConsumerThreadPool {
 
 	private Logger logger = LoggerFactory.getLogger(ConsumerThreadPool.class.getName());
-
-
 	private Integer runningThreads = 0;
 	private Long latency = 1000L;
 	@Value(value = "${kafka.topic}")
@@ -37,7 +35,7 @@ public class ConsumerThreadPool {
 		createConsumer();
 	}
 
-	private void createConsumer() {
+	private synchronized void createConsumer() {
 		ConsumerRunnableReference consumerRunnable = createConsumerRunnable();
 		consumerRunnables.addFirst(consumerRunnable);
 		runningThreads++;
@@ -55,37 +53,25 @@ public class ConsumerThreadPool {
 
 	public synchronized boolean addConsumer(){
 		if (runningThreads == MAX_CONSUMERS){
-			logger.info("Maximo nro de consumers alcanzado");
+			logger.info("Max number of Consumers reached");
 			return false;
 		}else {
-			ConsumerRunnableReference task = createConsumerRunnable();
-			runningThreads = runningThreads + 1;
-			consumerRunnables.add(task);
-			logger.info("ConsumerRunnable submit correcto");
+			createConsumer();
+			logger.info("Consumer created succesfully");
 			return true;
 		}
 	}
+
+
 	public synchronized boolean removeConsumer(){
 		ConsumerRunnableReference consumer = consumerRunnables.poll();
 		if (consumer == null){
-			logger.info("No quedan mas consumers para parar");
+			logger.info("No tasks for cancellation");
 			return false;
 		}
 		consumer.getTask().cancel(true);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			Thread.currentThread().interrupt();
-		}
-		if (consumer.getTask().isCancelled()){
-			logger.info("ConsumerRunnable cancelado correctamente");
-			runningThreads = runningThreads - 1;
-			return true;
-		}else {
-			return false;
-		}
-
+		runningThreads--;
+		return true;
 	}
 
 
@@ -95,7 +81,7 @@ public class ConsumerThreadPool {
 	}
 
 	public synchronized String log() {
-		return String.format("Tasks size: %s, thread number: %s ", consumerRunnables.size(), runningThreads );
+		return String.format("Tasks size: %s, thread number: %s ", consumerRunnables.size(), runningThreads) ;
 	}
 
 

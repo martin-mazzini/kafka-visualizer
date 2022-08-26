@@ -14,15 +14,15 @@ class ProducerRunnableReference {
         this.producerRunnable = producerRunnable;
     }
 
-    public List<String> getMessages() {
+    public synchronized List<String> getMessages() {
         return messages;
     }
 
-    public Future getTask() {
+    public synchronized Future getTask() {
         return task;
     }
 
-    public ProducerRunnable getProducerRunnable() {
+    public synchronized ProducerRunnable getProducerRunnable() {
         return producerRunnable;
     }
 }

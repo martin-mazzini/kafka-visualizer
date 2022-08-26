@@ -15,51 +15,59 @@ import java.util.Set;
 
 public class ConsumerRunnable implements Runnable {
 
-	private final Long latency;
-	private KafkaConsumer<String, String> consumer;
-	private List<String> messages;
-	private String topicName;
-	private Logger logger = LoggerFactory.getLogger(ConsumerRunnable.class.getName());
+    private final Long latency;
+    private KafkaConsumer<String, String> consumer;
+    private List<String> messages;
+    private String topicName;
+    private Logger logger = LoggerFactory.getLogger(ConsumerRunnable.class.getName());
 
-	public ConsumerRunnable(List<String> messages, KafkaConsumer consumer, String topicName, Long latency) {
-		this.consumer = consumer;
-		this.messages = messages;
-		this.topicName = topicName;
-		this.latency = latency;
+    public ConsumerRunnable(List<String> messages, KafkaConsumer consumer, String topicName, Long latency) {
+        this.consumer = consumer;
+        this.messages = messages;
+        this.topicName = topicName;
+        this.latency = latency;
 
-	}
+    }
 
-	@Override public void run() {
+    @Override
+    public void run() {
 
-		System.out.println("consumer: " + consumer.hashCode());
-		consumer.subscribe(Collections.singleton(topicName));
+        System.out.println("consumer: " + consumer.hashCode());
+        consumer.subscribe(Collections.singleton(topicName));
 
 
-		try {
-			while (!Thread.currentThread().isInterrupted()) {
-				ConsumerRecords<String, String> records =
-						consumer.poll(Duration.ofMillis(latency));
+        try {
+            while (true) {
 
-				for (ConsumerRecord<String, String> record : records) {
-					addMessage(record.value());
-				}
+                if (Thread.currentThread().isInterrupted()) {
+                    throw new InterruptedException();
+                }
 
-			}
-		} catch (WakeupException e) {
-			logger.info("Received shutdown signal!");
-		} finally {
-			try {
-				consumer.close();
-			}catch (Exception ex){
-				logger.error("Unexpected error in Consumer", ex);
-			}
+                ConsumerRecords<String, String> records =
+                        consumer.poll(Duration.ofMillis(latency));
 
-		}
+                for (ConsumerRecord<String, String> record : records) {
+                    addMessage(record.value());
+                }
 
-	}
+            }
+        } catch (WakeupException e) {
+            logger.info("Received shutdown signal!");
+        } catch (InterruptedException interruptedException) {
+            logger.info("Removing consumer");
+        } finally {
+            try {
+                consumer.close();
+            } catch (Exception ex) {
+                logger.error("Unexpected error in Consumer", ex);
+            }
 
-	private synchronized void addMessage(String value) {
-		this.messages.add(value);
-	}
+        }
+
+    }
+
+    private synchronized void addMessage(String value) {
+        this.messages.add(value);
+    }
 
 }

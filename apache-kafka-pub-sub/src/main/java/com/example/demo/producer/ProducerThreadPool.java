@@ -24,7 +24,7 @@ public class ProducerThreadPool {
 	private static final Integer MAX_N_THREADS = 5;
 	private Integer runningThreads = 0;
 	private Long latency = 1000L;
-	private Deque<ProducerRunnableReference> tasks = new LinkedList<>();
+	private Deque<ProducerRunnableReference> producerRunnables = new LinkedList<>();
 	private ExecutorService threadPool = Executors.newFixedThreadPool(MAX_N_THREADS);
 	@Value(value = "${kafka.topic}")
 	private String topicName;
@@ -34,18 +34,15 @@ public class ProducerThreadPool {
 		this.producer = producer;
 	}
 
-	public synchronized String log() {
-		return String.format("Tasks size: %s, thread number: %s ", tasks.size(), runningThreads );
-	}
 
 	public synchronized void start() {
 		createProducer();
 		createProducer();
 	}
 
-	private void createProducer() {
+	private synchronized void createProducer() {
 		ProducerRunnableReference task1 = createProducerRunnable();
-		tasks.addFirst(task1);
+		producerRunnables.addFirst(task1);
 		runningThreads++;
 	}
 
@@ -60,61 +57,52 @@ public class ProducerThreadPool {
 
 
 	public synchronized boolean removeProducer(){
-		ProducerRunnableReference poll = tasks.poll();
-		if (poll == null){
-			logger.info("No quedan mas producers para parar");
+		ProducerRunnableReference producer = producerRunnables.poll();
+		if (producer == null){
+			logger.info("No producers for cancellation");
 			return false;
 		}
-		poll.getTask().cancel(true);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			Thread.currentThread().interrupt();
-		}
-		if (poll.getTask().isCancelled()){
-			logger.info("ProducerRunnable cancelado correctamente");
-			runningThreads = runningThreads - 1;
-			return true;
-		}else {
-			return false;
-		}
-
+		producer.getTask().cancel(true);
+		runningThreads--;
+		return true;
 	}
 
 
 	public synchronized boolean addProducer(){
 		if (runningThreads == MAX_N_THREADS){
-			logger.info("Maximo nro de threads alcanzado");
+			logger.info("Max number of producers");
 			return false;
 		}else {
-			ProducerRunnableReference task = createProducerRunnable();
-			runningThreads = runningThreads + 1;
-			tasks.add(task);
-			logger.info("ProducerRunnable submit correcto");
+			createProducer();
+			logger.info("Producer created succesfully");
 			return true;
 		}
 	}
 
 
 	public synchronized void changeLatency(Long newLatency){
-		this.latency = latency;
-		for (ProducerRunnableReference tasks: this.tasks){
+		this.latency = newLatency;
+		for (ProducerRunnableReference tasks: this.producerRunnables){
 			tasks.getProducerRunnable().changeLatency(latency);
 		}
 	}
 
 
 	public synchronized void getMessage(){
-		List<List<String>> messages = tasks.stream().map(task -> task.getMessages()).collect(Collectors.toList());
+		List<List<String>> messages = producerRunnables.stream().map(task -> task.getMessages()).collect(Collectors.toList());
 	}
 
 
 
 	public synchronized List<List<String>> getMessages(){
-		return tasks.stream().map(task -> task.getMessages()).collect(Collectors.toList());
+		return producerRunnables.stream().map(task -> task.getMessages()).collect(Collectors.toList());
 
 	}
+
+	public synchronized String log() {
+		return String.format("Tasks size: %s, thread number: %s ", producerRunnables.size(), runningThreads );
+	}
+
 
 
 

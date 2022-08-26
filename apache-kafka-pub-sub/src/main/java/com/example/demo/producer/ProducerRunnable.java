@@ -14,12 +14,13 @@ import java.util.List;
 
 public class ProducerRunnable implements Runnable {
 
+    private Logger logger = LoggerFactory.getLogger(ProducerRunnable.class.getName());
+
     private KafkaProducer<String, String> producer;
     private String topicName;
     private volatile Long latency;
     private List<String> messages;
 
-    private Logger logger = LoggerFactory.getLogger(ProducerRunnable.class.getName());
 
     public ProducerRunnable(KafkaProducer<String, String> producer, String topicName, Long latency, List<String> messages) {
         this.producer = producer;
@@ -32,37 +33,36 @@ public class ProducerRunnable implements Runnable {
     public void run() {
 
         while (true) {
-            String randomWord = Dictionary.getRandomWord();
 
-            ProducerRecord<String, String> producerRecord =
-                    new ProducerRecord<>(topicName, randomWord);
-
-            producer.send(producerRecord, (metadata, e) -> {
-                if (e == null) {
-                    logger.info("Received new metadata. \n" +
+            try {
+                String randomWord = Dictionary.getRandomWord();
+                ProducerRecord<String, String> producerRecord =
+                        new ProducerRecord<>(topicName, randomWord);
+                producer.send(producerRecord, (metadata, e) -> {
+                    if (e == null) {
+                   /* logger.info("Received new metadata. \n" +
                             "Topic: " + metadata.topic() + "\n" +
                             "Partition: " + metadata.partition() + "\n" +
                             "Offset: " + metadata.offset() + "\n" +
-                            "Timestamp: " + metadata.timestamp());
-                    addMessage(randomWord);
-                } else {
-                    logger.error("Error while producing", e);
-                }
-            });
-            try {
+                            "Timestamp: " + metadata.timestamp());*/
+                        addMessage(randomWord);
+                    } else {
+                        logger.error("Error while producing", e);
+                    }
+                });
                 Thread.sleep(latency);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.info("Removing producer");
             }
         }
 
     }
 
-    private void addMessage(String randomWord) {
+    private synchronized void addMessage(String randomWord) {
         messages.add(randomWord);
     }
 
-    public void changeLatency(Long newLatency) {
+    public synchronized void changeLatency(Long newLatency) {
         this.latency = newLatency;
     }
 }

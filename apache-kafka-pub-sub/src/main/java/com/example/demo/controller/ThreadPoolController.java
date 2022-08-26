@@ -9,12 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController("")
 public class ThreadPoolController {
 
-
 	@Autowired
 	private ConsumerThreadPool consumerThreadPool;
 	@Autowired
 	private ProducerThreadPool producerThreadPool;
-
 
 	@GetMapping("/consumer/add")
 	public String addConsumer() {
@@ -34,7 +32,6 @@ public class ThreadPoolController {
 
 	@GetMapping("/producer/add")
 	public String addProducer() {
-
 		producerThreadPool.addProducer();
 		return producerThreadPool.log();
 
@@ -45,8 +42,6 @@ public class ThreadPoolController {
 	public String removeProducer() {
 		producerThreadPool.removeProducer();
 		return producerThreadPool.log();
-
-
 	}
 
 

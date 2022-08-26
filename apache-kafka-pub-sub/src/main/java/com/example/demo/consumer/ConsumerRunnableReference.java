@@ -21,7 +21,7 @@ class ConsumerRunnableReference {
 
 
 
-    public Future getTask() {
+    public synchronized Future getTask() {
         return task;
     }
 

@@ -5,7 +5,7 @@ window.onload = setUp;
 function setUp() {
     shortPollForConsumerData()
     shortPollForProducerData()
-    setCheckbox()
+    setProducerDataOnLoad()
 
 }
 
@@ -28,7 +28,7 @@ function fetchConsumerData() {
 }
 
 
-function fetchProducerData() {
+function doFetchProducerData() {
     return fetch("/producer")
         .then((response) => {
             if (response.ok) {
@@ -36,7 +36,11 @@ function fetchProducerData() {
             } else {
                 throw `error with status ${response.status}`;
             }
-        })
+        });
+}
+
+function fetchProducerData() {
+    return doFetchProducerData()
         .then(json => renderProducerData(json))
         .catch(
             error => {
@@ -173,14 +177,19 @@ function shortPollForProducerData() {
 
 
 function renderProducerData(producerData) {
+
+
+    let oneProducerData = producerData[0]
     const producerTable = document.querySelector("#producer")
+
+
     const p = producerTable
         .querySelector('.records_divs')
         .querySelector('p')
     let recordList = ""
 
     //single producer at the moment
-    let oneProducerData = producerData[0]
+
     for (let record of oneProducerData.records) {
         recordList = recordList + record + " <br/> "
     }
@@ -202,10 +211,36 @@ function updateUseKey(useKey, latency) {
         });
 }
 
-function setCheckbox() {
-    const checkbox = document.querySelector("#key_checkbox")
-    checkbox.addEventListener('change', (event) => {
-        console.log("Updating use key: " + event.currentTarget.checked)
-        updateUseKey(event.currentTarget.checked, null)
-    })
+function setProducerDataOnLoad() {
+
+    return doFetchProducerData()
+        .then(json => {
+            const producerTable = document.querySelector("#producer")
+            let oneProducerData = json[0]
+            let checkBoxInput = producerTable.querySelector('#key_checkbox');
+            let latencyInput = producerTable.querySelector('#latency_checkbox');
+
+
+            checkBoxInput.checked = oneProducerData.useKey;
+            latencyInput.value = oneProducerData.latency;
+
+            latencyInput.addEventListener('change', (event) => {
+                console.log("Updating latency: " + event.currentTarget.value)
+                updateUseKey(null, event.currentTarget.value)
+            })
+
+            checkBoxInput.addEventListener('change', (event) => {
+                console.log("Updating use key: " + event.currentTarget.checked)
+                updateUseKey(event.currentTarget.checked, null)
+            })
+
+        })
+        .catch(
+            error => {
+                console.log("Error fetch producer data: " + error)
+            }
+        )
+
+
+
 }

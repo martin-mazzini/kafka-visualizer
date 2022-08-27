@@ -9,6 +9,8 @@ public class ProducerData {
 
 
     private List<String> records  = new ArrayList<>();
+    private Long latency;
+    private boolean useKey;
 
 
 }

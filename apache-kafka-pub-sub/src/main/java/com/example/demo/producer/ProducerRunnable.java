@@ -91,6 +91,8 @@ public class ProducerRunnable implements Runnable {
         synchronized (this) {
             producerData.setRecords(new ArrayList<>(messages));
         }
+        producerData.setLatency(latency);
+        producerData.setUseKey(useKey.get());
         return producerData;
     }
 
@@ -103,8 +105,6 @@ public class ProducerRunnable implements Runnable {
             this.useKey.set(useKey);
         }
 
-
-        System.out.println("latency " + latency + " use key " + useKey);
     }
 }
 

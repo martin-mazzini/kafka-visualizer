@@ -1,7 +1,4 @@
 
-.data_table {
-  width:10px
-}
 
 
 
@@ -23,7 +20,7 @@ body {
   background: rgba(74, 210, 241, 0);
   border-radius: 4px;
   padding: 20px 20px 50px;
-  font-size: 25px;
+  font-size: 15px;
   text-align: center;
   transition: all 0.2s;
   margin: 0 auto;
@@ -82,27 +79,26 @@ button:hover {
 
 table {
   border-collapse: collapse;
-/*  width: 100%;*/
+  table-layout: fixed;
+  width: 200px;
+  height: 500px;
 }
 
 .inactive td, .inactive th, .inactive tr{
   background-color: rgba(239, 231, 231, 0.23);
 }
 
-
+input[type='number']{
+  width: 20px;
+}
 
 td, th {
   border: 2px solid #000000;
   text-align: center;
   padding:6px 20px;
+
 }
 
-
-td, th {
-  border: 2px solid #000000;
-  text-align: center;
-  padding:6px 20px;
-}
 tr th {
   border: 2px solid #000000;
   text-align: center;

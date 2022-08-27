@@ -1,0 +1,20 @@
+
+
+- Mejorar cancelacion 
+- Front end => otro coor para el producer
+- Front end => eliminar todas las palabras cuando se desactiva
+- Front end => acomodar divs y espacios. Fijar altos y anchos. Achicar letras.
+- Mostrar datos extra (offset, lag)
+- Corregir nro de consumer en el front
+
+
+
+
+
+
+
+
+
+
+
+<p>5-crumbles <br> 2-main <br> 4-remotely <br> 0-frigate <br> 1-dilly <br> 0-effacing <br> 4-flapjacks <br> 3-untouchable <br> 1-westerns <br> 1-understandable <br> 5-patients <br> 1-abruptly <br> 2-shy <br> 4-tosh <br> 5-braved <br> 3-accordingly <br> 1-vase <br> 2-frost <br> 4-humanly <br> 2-cocked <br> 5-jo <br> 2-rejoicing <br> 0-pupils <br> 4-stoop <br> 3-tobacco <br> 5-wussies <br> 5-nervous <br> 5-introductory <br> 2-monumental <br> 3-dredged <br> 2-whichever <br> 0-rejuvenate <br> 3-foxholes <br> 2-corpses <br> 4-concealing <br> 5-knickknacks <br> 2-shines <br> 2-invest <br> 1-appointment <br> 0-gardenias <br> 0-blathering <br> 2-exterminated <br> 2-kinds <br> 0-sessions <br> 3-faceless <br> 2-liters <br> 5-overnight <br> 2-lusts <br> 0-pap <br> 5-idolized <br> 0-moon <br> 0-sordid <br> 3-slides <br> 4-peeing <br> 2-car <br> 5-digestion <br> 4-psychological <br> 0-saki <br> 4-quiz <br> 0-tantrum <br> 2-fiends <br> 2-snowballing <br> 2-delinquent <br> 3-mirrors <br> 0-drain <br> 1-veggies <br> 4-wooden <br> 1-noise <br> 2-shares <br> 5-evenings <br> 5-huffed <br> 1-stodgy <br> 5-existential <br> 1-comforted <br> 4-gills <br> 3-arresting <br> 5-looming <br> 1-exceptions <br> 3-sacrificed <br> 5-truckers <br> 0-accumulate <br> 0-voiced <br> 2-frightened <br> 1-toad <br> 4-invite <br> 4-ingested <br> 2-scratch <br> 3-invaded <br> 3-buffoon <br> 5-indignities <br> 1-proofed <br> 2-became <br> 2-majesty <br> 0-yield <br> 5-spooked <br> 1-pronounced <br> 3-classless <br> 0-sergeant <br> 1-inmate <br> 2-stings <br> 2-ultimatums <br> 5-plan <br> 0-faint <br> 2-tilt <br> 5-opening <br> 1-incoming <br> 3-rhymed <br> 3-domesticity <br> 2-mol <br> 0-nanosecond <br> 5-financed <br> 4-tasty <br> 4-hilarious <br> 1-bounced <br> </p>

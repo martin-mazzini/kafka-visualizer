@@ -50,33 +50,10 @@ public class ConsumerController {
 	}
 
 	@PatchMapping("/consumer/{id}")
-	public ResponseEntity<String> updateProducer(@PathVariable String id, @RequestBody UpdateConsumerDTO updateConsumerDTO) {
+	public ResponseEntity<String> updateConsumer(@PathVariable String id, @RequestBody UpdateConsumerDTO updateConsumerDTO) {
 		consumerThreadPool.updateConsumer(id, updateConsumerDTO.getLatency());
 		return ResponseEntity.ok().build();
 	}
-
-
-/*	@GetMapping("/consume/log")
-	public String log() {
-		return consumerThreadPool.log();
-	}
-
-
-	@GetMapping("/consumer/plainmessages")
-	public List<String> consume() {
-		return consumerThreadPool.getMessages().stream().flatMap(Collection::stream).collect(Collectors.toList());
-	}
-
-
-	@GetMapping("/consume/{index}")
-	public List<String> consume(@PathVariable String index) {
-		List<List<String>> messages = consumerThreadPool.getMessages();
-		if (Integer.parseInt(index) < messages.size()) {
-			return consumerThreadPool.getMessages().get(Integer.parseInt(index));
-		} else {
-			return Arrays.asList("Consultando producer out of index");
-		}
-	}*/
 
 
 }

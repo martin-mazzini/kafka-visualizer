@@ -96,7 +96,9 @@ function renderActiveConsumerTable(consumerTable, consumerData, button) {
         .querySelector('p')
     let recordList = ""
     for (let record of consumerData.records) {
-        recordList = recordList + record.offset + " | " + record.word +  " <br/> "
+        recordList = recordList +
+          //  record.offset + " | "
+            + record.word +  " <br/> "
     }
     p.innerHTML = recordList
 

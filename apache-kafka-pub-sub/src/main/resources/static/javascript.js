@@ -125,6 +125,7 @@ function renderActiveConsumerTable(consumerTable, consumerData, button) {
 
         let latencyInput = consumerTable.querySelector('.latency_checkbox')
         latencyInput.value = consumerData.latency
+        latencyInput.disabled = false
         latencyInput.addEventListener('change', (event) => {
             updateConsumer(consumerTable.id, event.currentTarget.value)
         })
@@ -137,10 +138,11 @@ function renderInactiveConsumerTable(consumerTable, button) {
     if (!consumerTable.classList.contains("inactive")) {
 
 
-        consumerTable.querySelector('.latency_div').innerHTML = ""
+
         consumerTable.querySelector('.partitions_div').innerHTML = ""
         consumerTable.querySelector('.group_div').innerHTML = ""
-
+        consumerTable.querySelector('.latency_checkbox').disabled = true
+        consumerTable.querySelector('.latency_checkbox').value = null
 
         consumerTable.classList.add("inactive")
         consumerTable.classList.remove("active")
@@ -153,6 +155,8 @@ function renderInactiveConsumerTable(consumerTable, button) {
         cloneButton.addEventListener("click", function () {
             addConsumer(consumerTable.id)
         })
+
+
     }
 }
 

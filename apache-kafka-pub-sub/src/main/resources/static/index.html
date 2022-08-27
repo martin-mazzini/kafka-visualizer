@@ -11,101 +11,265 @@
     <div id="results"></div>
 
 
-        <div style="display: flex;   align-content: space-between; width:900px">
+    <div style="display: flex;   align-content: space-between; width:900px">
 
 
+        <div style="  flex: 1">
+            <table class="active" id="producer">
+                <tbody>
+                <tr>
+                    <th colspan="2"><strong>Producerr</strong></th>
+                </tr>
+                <tr class="records_tr">
+                    <td colspan="2">
+                        <div class="records_divs" style="height:300px">
+                            <p>
+                            </p>
+                        </div>
 
-            <div style="  flex: 1">
-                <table class="active" id="producer">
-                    <tbody>
-                    <tr>
-                        <th colspan="2"><strong>Producerr</strong></th>
-                    </tr>
-                    <tr class="records_tr">
-                        <td colspan="2">
-                            <div class="records_divs" style="height:300px">
-                                <p>
-                                </p>
-                            </div>
-
-                        </td>
-                    </tr>
-                    <tr class="latency_row">
-                        <th><strong>Latency</strong></th>
-                        <td>  <input type="number" class="latency_checkbox"
-                                     min="100" max="3000"></td>
-
-                    </tr>
-                    <tr class="check_row">
-                        <th style="font-size: 12px;" rowspan="2"><strong>Use numeric prefix as Key</strong></th>
-                        <td rowspan="2">
-                            <input type="checkbox" class="key_checkbox" >
-                        </td>
-                    </tr>
-
-
-                    </tbody>
-                </table>
-            </div>
-
-
-
-
-
-            <div style="  flex: 1">
-                <table class="data_table" id="one">
-                    <tbody>
-                    <tr>
-                        <th colspan="2"><strong>Consumer 1</strong></th>
-                    </tr>
-                    <tr>
-                        <th><strong>Group</strong></th>
-                        <td class="group_div">Jill</td>
-                    </tr>
-                    <tr class="records_tr">
-                        <td colspan="2">
-                            <div class="records_divs">
-                                <p>
-                                </p>
-                            </div>
-
-                        </td>
-                    </tr>
-                    <tr class="partitions_row">
-                        <th><strong>Partitions</strong></th>
-                        <td class="partitions_div">
-                        </td>
-                    </tr>
-                    <tr class="latency_row">
-                        <th><strong>Latency</strong></th>
-                        <td>  <input type="number" class="latency_checkbox"
-                                     min="100" max="3000"></td>
-
-                    </tr>
-
-
-
-                    <tr class="button_row">
-                        <td colspan="2">
-                            <button class="change_button">Loading...
-                            </button>
-                        </td>
-                    </tr>
-
-
-                    </tbody>
-                </table>
-            </div>
-
-
-
-
-
-
-
-
-
+                    </td>
+                </tr>
+                <tr class="latency_row">
+                    <th><strong>Latency</strong></th>
+                    <td><input type="number" class="latency_checkbox"
+                               min="100" max="3000"></td>
+                </tr>
+                <tr class="check_row">
+                    <th style="font-size: 12px;" rowspan="2"><strong>Use numeric prefix as Key</strong></th>
+                    <td rowspan="2">
+                        <input type="checkbox" class="key_checkbox">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
+
+
+        <div style="  flex: 1">
+            <table class="data_table" id="one">
+                <tbody>
+                <tr>
+                    <th colspan="2"><strong>Consumer 1</strong></th>
+                </tr>
+                <tr>
+                    <th><strong>Group</strong></th>
+                    <td class="group_div">Jill</td>
+                </tr>
+                <tr class="records_tr">
+                    <td colspan="2">
+                        <div class="records_divs">
+                            <p>
+                            </p>
+                        </div>
+
+                    </td>
+                </tr>
+                <tr class="partitions_row">
+                    <th><strong>Partitions</strong></th>
+                    <td class="partitions_div">
+                    </td>
+                </tr>
+                <tr class="latency_row">
+                    <th><strong>Latency</strong></th>
+                    <td><input type="number" class="latency_checkbox"
+                               min="100" max="3000"></td>
+
+                </tr>
+                <tr class="button_row">
+                    <td colspan="2">
+                        <button class="change_button">Loading...
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+
+        <div style="  flex: 1">
+            <table class="data_table" id="two">
+                <tbody>
+                <tr>
+                    <th colspan="2"><strong>Consumer 1</strong></th>
+                </tr>
+                <tr>
+                    <th><strong>Group</strong></th>
+                    <td class="group_div">Jill</td>
+                </tr>
+                <tr class="records_tr">
+                    <td colspan="2">
+                        <div class="records_divs">
+                            <p>
+                            </p>
+                        </div>
+
+                    </td>
+                </tr>
+                <tr class="partitions_row">
+                    <th><strong>Partitions</strong></th>
+                    <td class="partitions_div">
+                    </td>
+                </tr>
+                <tr class="latency_row">
+                    <th><strong>Latency</strong></th>
+                    <td><input type="number" class="latency_checkbox"
+                               min="100" max="3000"></td>
+
+                </tr>
+                <tr class="button_row">
+                    <td colspan="2">
+                        <button class="change_button">Loading...
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+        <div style="  flex: 1">
+            <table class="data_table" id="three">
+                <tbody>
+                <tr>
+                    <th colspan="2"><strong>Consumer 1</strong></th>
+                </tr>
+                <tr>
+                    <th><strong>Group</strong></th>
+                    <td class="group_div">Jill</td>
+                </tr>
+                <tr class="records_tr">
+                    <td colspan="2">
+                        <div class="records_divs">
+                            <p>
+                            </p>
+                        </div>
+
+                    </td>
+                </tr>
+                <tr class="partitions_row">
+                    <th><strong>Partitions</strong></th>
+                    <td class="partitions_div">
+                    </td>
+                </tr>
+                <tr class="latency_row">
+                    <th><strong>Latency</strong></th>
+                    <td><input type="number" class="latency_checkbox"
+                               min="100" max="3000"></td>
+
+                </tr>
+                <tr class="button_row">
+                    <td colspan="2">
+                        <button class="change_button">Loading...
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+
+
+
+
+        <div style="  flex: 1">
+            <table class="data_table" id="four">
+                <tbody>
+                <tr>
+                    <th colspan="2"><strong>Consumer 1</strong></th>
+                </tr>
+                <tr>
+                    <th><strong>Group</strong></th>
+                    <td class="group_div">Jill</td>
+                </tr>
+                <tr class="records_tr">
+                    <td colspan="2">
+                        <div class="records_divs">
+                            <p>
+                            </p>
+                        </div>
+
+                    </td>
+                </tr>
+                <tr class="partitions_row">
+                    <th><strong>Partitions</strong></th>
+                    <td class="partitions_div">
+                    </td>
+                </tr>
+                <tr class="latency_row">
+                    <th><strong>Latency</strong></th>
+                    <td><input type="number" class="latency_checkbox"
+                               min="100" max="3000"></td>
+
+                </tr>
+                <tr class="button_row">
+                    <td colspan="2">
+                        <button class="change_button">Loading...
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+
+
+
+
+        <div style="  flex: 1">
+            <table class="data_table" id="five">
+                <tbody>
+                <tr>
+                    <th colspan="2"><strong>Consumer 1</strong></th>
+                </tr>
+                <tr>
+                    <th><strong>Group</strong></th>
+                    <td class="group_div">Jill</td>
+                </tr>
+                <tr class="records_tr">
+                    <td colspan="2">
+                        <div class="records_divs">
+                            <p>
+                            </p>
+                        </div>
+
+                    </td>
+                </tr>
+                <tr class="partitions_row">
+                    <th><strong>Partitions</strong></th>
+                    <td class="partitions_div">
+                    </td>
+                </tr>
+                <tr class="latency_row">
+                    <th><strong>Latency</strong></th>
+                    <td><input type="number" class="latency_checkbox"
+                               min="100" max="3000"></td>
+
+                </tr>
+                <tr class="button_row">
+                    <td colspan="2">
+                        <button class="change_button">Loading...
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+    </div>
     <div>
 
 </body>

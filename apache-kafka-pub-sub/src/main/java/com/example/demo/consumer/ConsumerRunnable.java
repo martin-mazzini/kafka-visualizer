@@ -72,7 +72,7 @@ public class ConsumerRunnable implements Runnable {
                 logger.info("Finally clause, Removing consumer");
                 consumer.close();
             } catch (Exception ex) {
-                logger.info("Exception closing consumer", ex);
+                logger.info("Exception closing consumer");
             }
         }
 

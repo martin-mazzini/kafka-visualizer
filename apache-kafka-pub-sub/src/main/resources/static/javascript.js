@@ -2,9 +2,11 @@ console.log("Hi")
 
 window.onload = setUp;
 
+
 function setUp() {
     shortPollForConsumerData()
     shortPollForProducerData()
+    shortPollForPartitionsData()
     setProducerDataOnLoad()
 
 
@@ -94,7 +96,7 @@ function renderActiveConsumerTable(consumerTable, consumerData, button) {
         .querySelector('p')
     let recordList = ""
     for (let record of consumerData.records) {
-        recordList = recordList + record + " <br/> "
+        recordList = recordList + record.offset + " | " + record.word +  " <br/> "
     }
     p.innerHTML = recordList
 
@@ -277,4 +279,41 @@ function setProducerDataOnLoad() {
         )
 }
 
+
+function renderPartitionsData(json) {
+
+    const table = document.querySelector(".topics")
+
+    for (var i = 2, row; row = table.rows[i]; i++) {
+        let partitionData = json[i-2]
+        table.rows[i].cells[0].innerHTML =  partitionData.partition
+        table.rows[i].cells[1].innerHTML =  partitionData.endOffset
+        table.rows[i].cells[2].innerHTML =  partitionData.current
+        table.rows[i].cells[3].innerHTML  = partitionData.lag
+    }
+
+}
+
+function fetchPartitionData() {
+    fetch("/topicpartitions")
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw `error with status ${response.status}`;
+            }
+        })
+        .then(json => renderPartitionsData(json))
+        .catch(
+            error => {
+                console.log("Error fetch consumer data: " + error)
+            }
+        )
+}
+
+function shortPollForPartitionsData() {
+    const interval = setInterval(function () {
+        fetchPartitionData();
+    }, 200);
+}
 

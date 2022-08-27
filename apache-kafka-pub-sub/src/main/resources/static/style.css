@@ -19,7 +19,7 @@ body {
 #layout {
   background: rgba(74, 210, 241, 0);
   border-radius: 4px;
-  padding: 20px 20px 50px;
+
   font-size: 15px;
   text-align: center;
   transition: all 0.2s;
@@ -76,6 +76,10 @@ button:hover {
 
 
 /* TABLA */
+.topics table, .topics tr, .topics th, .topics td{
+  font-size: 15px;
+  padding:3px 10px;
+}
 
 table {
   border-collapse: collapse;

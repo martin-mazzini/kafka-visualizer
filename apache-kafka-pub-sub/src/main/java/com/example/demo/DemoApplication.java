@@ -5,6 +5,7 @@ import com.example.demo.consumer.ConsumerThreadPool;
 import com.example.demo.dictionary.Dictionary;
 import com.example.demo.producer.ProducerRunnable;
 import com.example.demo.producer.ProducerThreadPool;
+import com.example.demo.topics.TopicPartitionReader;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.CreateTopicsResult;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -43,6 +44,9 @@ public class DemoApplication {
     private ProducerThreadPool producerThreadPool;
 
     @Autowired
+    private TopicPartitionReader topicPartitionReader;
+
+    @Autowired
     private Admin admin;
     @Autowired
     private NewTopic newTopic;
@@ -68,6 +72,7 @@ public class DemoApplication {
         Dictionary.loadData();
         consumerThreadPool.start();
         producerThreadPool.start();
+        topicPartitionReader.run();
 
 
     }

@@ -8,7 +8,7 @@ import java.util.List;
 public class ConsumerData {
 
     private List<Integer> partitions = new ArrayList<>();
-    private List<String> records  = new ArrayList<>();
+    private List<RecordDTO> records  = new ArrayList<RecordDTO>();
     private String consumerId;
     private String consumerGroup;
     private Long latency;

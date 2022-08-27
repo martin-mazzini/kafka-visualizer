@@ -13,9 +13,6 @@ class ConsumerRunnableReference {
         this.consumerRunnable = consumerRunnable;
     }
 
-    public List<String> getMessages() {
-        return consumerRunnable.getMessages();
-    }
 
     public synchronized Future getTask() {
         return task;

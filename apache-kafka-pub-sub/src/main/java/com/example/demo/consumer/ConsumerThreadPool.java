@@ -21,14 +21,19 @@ public class ConsumerThreadPool {
     private Long latency = 1000L;
     @Value(value = "${kafka.topic}")
     private String topicName;
+    @Value(value = "${kafka.group.id}")
+    private String groupId;
+
     private static final Integer MAX_CONSUMERS = 5;
     private static ExecutorService threadPool = Executors.newFixedThreadPool(MAX_CONSUMERS);
     private Map<String, ConsumerRunnableReference> consumerRunnables = new HashMap<>();
     private BeanFactory beanFactory;
+    private ConsumerFactory consumerFactory;
 
 
-    public ConsumerThreadPool(BeanFactory beanFactory) {
+    public ConsumerThreadPool(BeanFactory beanFactory, ConsumerFactory consumerFactory) {
         this.beanFactory = beanFactory;
+        this.consumerFactory = consumerFactory;
     }
 
     public synchronized void start() {
@@ -44,7 +49,7 @@ public class ConsumerThreadPool {
 
 
     private ConsumerRunnableReference createConsumerRunnable(String consumerId) {
-        ConsumerRunnable consumerRunnable = new ConsumerRunnable(beanFactory.getBean(KafkaConsumer.class), topicName, latency, consumerId);
+        ConsumerRunnable consumerRunnable = new ConsumerRunnable(consumerFactory.getConsumer(groupId), topicName, latency, consumerId);
         Future future = threadPool.submit(consumerRunnable);
         ConsumerRunnableReference task = new ConsumerRunnableReference(future, consumerRunnable);
         return task;

@@ -10,17 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ConsumerRunnable implements Runnable {
 
     private volatile long latency;
     private String consumerId;
     private KafkaConsumer<String, String> consumer;
-    private List<String> messages = Collections.synchronizedList(new ArrayList<>());
+    private List<RecordDTO> messages = Collections.synchronizedList(new ArrayList<>());
     private String topicName;
     private Logger logger = LoggerFactory.getLogger(ConsumerRunnable.class.getName());
 
@@ -56,12 +53,11 @@ public class ConsumerRunnable implements Runnable {
                             consumer.poll(Duration.ofMillis(10));
                     for (ConsumerRecord<String, String> record : records) {
                         // System.out.println("polling from thread" + Thread.currentThread().getId());
-                        addMessage(record.value());
+                        addMessage(record);
                     }
                 }
 
-                //for allowing other threads to acquire lock,
-                //todo replace with some fair locking mechanism
+
                 Thread.sleep(latency);
             }
         } catch (WakeupException e) {
@@ -85,12 +81,12 @@ public class ConsumerRunnable implements Runnable {
 
     }
 
-    private void addMessage(String value) {
-        this.messages.add(value);
+    private void addMessage(ConsumerRecord<String, String> consumerRecord) {
+        this.messages.add(new RecordDTO(consumerRecord.value(), consumerRecord.offset()));
 
     }
 
-    public List<String> getMessages() {
+    public List<RecordDTO> getMessages() {
         return new ArrayList<>(messages);
 
     }
@@ -104,10 +100,18 @@ public class ConsumerRunnable implements Runnable {
 
         synchronized (consumer) {
             Set<TopicPartition> assignment = consumer.assignment();
+
+            Map<TopicPartition, Long> endOffsets =consumer.endOffsets(assignment);
+
+
             for (TopicPartition topicPartition : assignment) {
                 int partition = topicPartition.partition();
                 consumerData.addPartition(partition);
+
             }
+
+
+
             consumerData.setConsumerGroup(consumer.groupMetadata().groupId());
         }
 

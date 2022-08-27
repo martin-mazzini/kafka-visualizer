@@ -3,6 +3,7 @@ package com.example.demo.controller;
 
 import com.example.demo.consumer.ConsumerThreadPool;
 import com.example.demo.consumer.ConsumerData;
+import com.example.demo.controller.dto.UpdateConsumerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +47,12 @@ public class ConsumerController {
 		}else{
 			return ResponseEntity.badRequest().build();
 		}
+	}
+
+	@PatchMapping("/consumer/{id}")
+	public ResponseEntity<String> updateProducer(@PathVariable String id, @RequestBody UpdateConsumerDTO updateConsumerDTO) {
+		consumerThreadPool.updateConsumer(id, updateConsumerDTO.getLatency());
+		return ResponseEntity.ok().build();
 	}
 
 

@@ -25,4 +25,8 @@ class ConsumerRunnableReference {
     public ConsumerData getConsumerData() {
         return consumerRunnable.getData();
     }
+
+    public void update(long latency) {
+         consumerRunnable.update(latency);
+    }
 }

@@ -79,4 +79,8 @@ public class ConsumerThreadPool {
     public synchronized List<ConsumerData> getConsumerData() {
         return consumerRunnables.values().stream().map(task -> task.getConsumerData()).collect(Collectors.toList());
     }
+
+    public synchronized void updateConsumer(String id, long latency) {
+        consumerRunnables.get(id).update(latency);
+    }
 }

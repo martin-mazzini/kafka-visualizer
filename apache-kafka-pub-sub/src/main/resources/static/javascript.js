@@ -7,10 +7,11 @@ function setUp() {
     shortPollForProducerData()
     setProducerDataOnLoad()
 
+
 }
 
 
-function fetchConsumerData() {
+function doFetchConsumerData() {
     return fetch("/consumer")
         .then((response) => {
             if (response.ok) {
@@ -18,7 +19,11 @@ function fetchConsumerData() {
             } else {
                 throw `error with status ${response.status}`;
             }
-        })
+        });
+}
+
+function fetchConsumerData() {
+    return doFetchConsumerData()
         .then(json => renderConsumerData(json))
         .catch(
             error => {
@@ -68,6 +73,21 @@ function removeConsumer(consumerId) {
 }
 
 
+function updateConsumer(id, latency) {
+
+    console.log("Updating latency for consumer: " + latency + " -" + id)
+    return fetch(`/consumer/` + id,
+        {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({latency: latency})
+        });
+
+}
+
 function renderActiveConsumerTable(consumerTable, consumerData, button) {
     const p = consumerTable
         .querySelector('.records_divs')
@@ -83,10 +103,11 @@ function renderActiveConsumerTable(consumerTable, consumerData, button) {
         .querySelector('.partitions_div')
     partitions.innerHTML = consumerData.partitions
 
-    consumerTable.querySelector('.latency_div').innerHTML = consumerData.latency
+
     consumerTable.querySelector('.group_div').innerHTML = consumerData.consumerGroup
 
 
+    //quick way to do execute this block only once when state changes from inactive to active
     if (!consumerTable.classList.contains("active")) {
         consumerTable.classList.remove("inactive")
         consumerTable.classList.add("active")
@@ -100,10 +121,19 @@ function renderActiveConsumerTable(consumerTable, consumerData, button) {
         cloneButton.addEventListener("click", function () {
             removeConsumer(consumerTable.id)
         })
+
+
+        let latencyInput = consumerTable.querySelector('.latency_checkbox')
+        latencyInput.value = consumerData.latency
+        latencyInput.addEventListener('change', (event) => {
+            updateConsumer(consumerTable.id, event.currentTarget.value)
+        })
+
     }
 }
 
 function renderInactiveConsumerTable(consumerTable, button) {
+    //quick way to do execute this block only once when state changes from active to inactive
     if (!consumerTable.classList.contains("inactive")) {
 
 
@@ -202,7 +232,7 @@ function renderProducerData(producerData) {
 function updateUseKey(useKey, latency) {
     return fetch(`/producer`,
         {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -217,18 +247,19 @@ function setProducerDataOnLoad() {
         .then(json => {
             const producerTable = document.querySelector("#producer")
             let oneProducerData = json[0]
-            let checkBoxInput = producerTable.querySelector('#key_checkbox');
-            let latencyInput = producerTable.querySelector('#latency_checkbox');
+            let checkBoxInput = producerTable.querySelector('.key_checkbox');
+            let latencyInput = producerTable.querySelector('.latency_checkbox');
 
 
-            checkBoxInput.checked = oneProducerData.useKey;
+
             latencyInput.value = oneProducerData.latency;
-
             latencyInput.addEventListener('change', (event) => {
                 console.log("Updating latency: " + event.currentTarget.value)
                 updateUseKey(null, event.currentTarget.value)
             })
 
+
+            checkBoxInput.checked = oneProducerData.useKey;
             checkBoxInput.addEventListener('change', (event) => {
                 console.log("Updating use key: " + event.currentTarget.checked)
                 updateUseKey(event.currentTarget.checked, null)
@@ -240,7 +271,6 @@ function setProducerDataOnLoad() {
                 console.log("Error fetch producer data: " + error)
             }
         )
-
-
-
 }
+
+

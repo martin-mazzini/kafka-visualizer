@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class ConsumerRunnable implements Runnable {
 
-    private final Long latency;
+    private volatile long latency;
     private String consumerId;
     private KafkaConsumer<String, String> consumer;
     private List<String> messages = Collections.synchronizedList(new ArrayList<>());
@@ -50,7 +50,7 @@ public class ConsumerRunnable implements Runnable {
 
                 synchronized (consumer) {
                     ConsumerRecords<String, String> records =
-                            consumer.poll(Duration.ofMillis(100));
+                            consumer.poll(Duration.ofMillis(10));
                     for (ConsumerRecord<String, String> record : records) {
                         // System.out.println("polling from thread" + Thread.currentThread().getId());
                         addMessage(record.value());
@@ -59,7 +59,7 @@ public class ConsumerRunnable implements Runnable {
 
                 //for allowing other threads to acquire lock,
                 //todo replace with some fair locking mechanism
-                Thread.sleep(10);
+                Thread.sleep(latency);
             }
         } catch (WakeupException e) {
             logger.info("Received shutdown signal!");
@@ -116,6 +116,10 @@ public class ConsumerRunnable implements Runnable {
         return consumerData;
 
 
+    }
+
+    public void update(long latency) {
+        this.latency = latency;
     }
 
 

@@ -3,10 +3,10 @@ package com.example.demo.controller;
 
 import com.example.demo.producer.ProducerData;
 import com.example.demo.producer.ProducerThreadPool;
-import com.example.demo.producer.dto.UpdateProducerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.demo.controller.dto.*;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class ProducerController {
     }
 
 
-    @PutMapping("/producer")
+    @PatchMapping("/producer")
     public ResponseEntity<String> updateProducer(@RequestBody UpdateProducerDTO updateProducerDTO) {
         producerThreadPool.updateConsumer(updateProducerDTO.getLatency(), updateProducerDTO.getUseKey());
         return ResponseEntity.ok().build();

@@ -30,5 +30,8 @@ class ProducerRunnableReference {
     }
 
 
+    public  void update(Long latency, Boolean useKey) {
+       producerRunnable.update(latency, useKey);
 
+    }
 }

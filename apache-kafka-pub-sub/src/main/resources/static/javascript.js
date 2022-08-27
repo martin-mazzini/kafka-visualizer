@@ -1,6 +1,14 @@
 console.log("Hi")
-shortPollForConsumerData()
-shortPollForProducerData()
+
+window.onload = setUp;
+
+function setUp() {
+    shortPollForConsumerData()
+    shortPollForProducerData()
+    setCheckbox()
+
+}
+
 
 function fetchConsumerData() {
     return fetch("/consumer")
@@ -56,6 +64,64 @@ function removeConsumer(consumerId) {
 }
 
 
+function renderActiveConsumerTable(consumerTable, consumerData, button) {
+    const p = consumerTable
+        .querySelector('.records_divs')
+        .querySelector('p')
+    let recordList = ""
+    for (let record of consumerData.records) {
+        recordList = recordList + record + " <br/> "
+    }
+    p.innerHTML = recordList
+
+
+    const partitions = consumerTable
+        .querySelector('.partitions_div')
+    partitions.innerHTML = consumerData.partitions
+
+    consumerTable.querySelector('.latency_div').innerHTML = consumerData.latency
+    consumerTable.querySelector('.group_div').innerHTML = consumerData.consumerGroup
+
+
+    if (!consumerTable.classList.contains("active")) {
+        consumerTable.classList.remove("inactive")
+        consumerTable.classList.add("active")
+
+        button.innerHTML = "Remove consumer"
+        button.classList.remove("add_button")
+        button.classList.add("delete_button")
+
+
+        let cloneButton = removeListeners(button)
+        cloneButton.addEventListener("click", function () {
+            removeConsumer(consumerTable.id)
+        })
+    }
+}
+
+function renderInactiveConsumerTable(consumerTable, button) {
+    if (!consumerTable.classList.contains("inactive")) {
+
+
+        consumerTable.querySelector('.latency_div').innerHTML = ""
+        consumerTable.querySelector('.partitions_div').innerHTML = ""
+        consumerTable.querySelector('.group_div').innerHTML = ""
+
+
+        consumerTable.classList.add("inactive")
+        consumerTable.classList.remove("active")
+
+        button.innerHTML = "Add consumer"
+        button.classList.add("add_button")
+        button.classList.remove("delete_button")
+
+        let cloneButton = removeListeners(button)
+        cloneButton.addEventListener("click", function () {
+            addConsumer(consumerTable.id)
+        })
+    }
+}
+
 function renderConsumerData(data) {
 
     const consumerTables = document.querySelectorAll(".data_table")
@@ -74,55 +140,9 @@ function renderConsumerData(data) {
         // console.log("Processing: " + consumerTable.id)
 
         if (consumerData == null) {
-
-            if (!consumerTable.classList.contains("inactive")) {
-
-                consumerTable.classList.add("inactive")
-                consumerTable.classList.remove("active")
-
-                button.innerHTML = "Add consumer"
-                button.classList.add("add_button")
-                button.classList.remove("delete_button")
-
-                let cloneButton = removeListeners(button)
-                cloneButton.addEventListener("click", function () {
-                    addConsumer(consumerTable.id)
-                })
-            }
-
-
+            renderInactiveConsumerTable(consumerTable, button);
         } else {
-            const p = consumerTable
-                .querySelector('.records_divs')
-                .querySelector('p')
-            let recordList = ""
-            for (let record of consumerData.records) {
-                recordList = recordList + record + " <br/> "
-            }
-            p.innerHTML = recordList
-
-
-            const partitions = consumerTable
-                .querySelector('.partitions_div')
-            partitions.innerHTML = consumerData.partitions
-
-
-            if (!consumerTable.classList.contains("active")) {
-                consumerTable.classList.remove("inactive")
-                consumerTable.classList.add("active")
-
-                button.innerHTML = "Remove consumer"
-                button.classList.remove("add_button")
-                button.classList.add("delete_button")
-
-
-                let cloneButton = removeListeners(button)
-                cloneButton.addEventListener("click", function () {
-                    removeConsumer(consumerTable.id)
-                })
-            }
-
-
+            renderActiveConsumerTable(consumerTable, consumerData, button);
         }
     })
 }
@@ -167,5 +187,25 @@ function renderProducerData(producerData) {
     p.innerHTML = recordList
 }
 
+//`https://api.parse.com/1/users?foo=${encodeURIComponent(data.foo)}&bar=${encodeURIComponent(data.bar)}`
 
 
+function updateUseKey(useKey, latency) {
+    return fetch(`/producer`,
+        {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({latency: latency, useKey: useKey})
+        });
+}
+
+function setCheckbox() {
+    const checkbox = document.querySelector("#key_checkbox")
+    checkbox.addEventListener('change', (event) => {
+        console.log("Updating use key: " + event.currentTarget.checked)
+        updateUseKey(event.currentTarget.checked, null)
+    })
+}

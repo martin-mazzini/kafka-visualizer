@@ -93,4 +93,7 @@ public class ProducerThreadPool {
 		return producerRunnables.stream().map(task -> task.getProducerData()).collect(Collectors.toList());
 	}
 
+	public synchronized void updateConsumer(Long latency, Boolean useKey) {
+		producerRunnables.stream().forEach(producer -> producer.update(latency, useKey));
+	}
 }

@@ -13,6 +13,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class ProducerRunnable implements Runnable {
 
@@ -20,9 +21,9 @@ public class ProducerRunnable implements Runnable {
 
     private KafkaProducer<String, String> producer;
     private String topicName;
-    private volatile Long latency;
-    private List<String> messages;
+    private volatile long latency;
     private final AtomicBoolean useKey = new AtomicBoolean(true);
+    private List<String> messages;
 
 
     public ProducerRunnable(KafkaProducer<String, String> producer, String topicName, Long latency, List<String> messages) {
@@ -42,8 +43,10 @@ public class ProducerRunnable implements Runnable {
 
 
                 ProducerRecord<String, String> producerRecord;
+
+
                 if (useKey.get()) {
-                    String key = randomWord.substring(0,1);
+                    String key = randomWord.substring(0, 1);
                     producerRecord = new ProducerRecord<>(topicName, key, randomWord);
                 } else {
                     producerRecord = new ProducerRecord<>(topicName, randomWord);
@@ -57,12 +60,17 @@ public class ProducerRunnable implements Runnable {
                             "Partition: " + metadata.partition() + "\n" +
                             "Offset: " + metadata.offset() + "\n" +
                             "Timestamp: " + metadata.timestamp());*/
-                        addMessage(randomWord);
+                        synchronized (this) {
+                            addMessage(randomWord);
+                        }
                     } else {
                         logger.error("Error while producing", e);
                     }
                 });
+
+
                 Thread.sleep(latency);
+
             } catch (InterruptedException e) {
                 logger.info("Removing producer");
             }
@@ -70,11 +78,11 @@ public class ProducerRunnable implements Runnable {
 
     }
 
-    private synchronized void addMessage(String randomWord) {
+    private void addMessage(String randomWord) {
         messages.add(randomWord);
     }
 
-    public synchronized void changeLatency(Long newLatency) {
+    public void changeLatency(Long newLatency) {
         this.latency = newLatency;
     }
 
@@ -84,6 +92,19 @@ public class ProducerRunnable implements Runnable {
             producerData.setRecords(new ArrayList<>(messages));
         }
         return producerData;
+    }
+
+    public void update(Long latency, Boolean useKey) {
+
+        if (latency != null) {
+            this.latency = latency;
+        }
+        if (useKey != null){
+            this.useKey.set(useKey);
+        }
+
+
+        System.out.println("latency " + latency + " use key " + useKey);
     }
 }
 

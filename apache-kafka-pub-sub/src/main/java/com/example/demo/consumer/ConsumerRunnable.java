@@ -106,8 +106,6 @@ public class ConsumerRunnable implements Runnable {
                 consumerData.addPartition(partition);
             }
             consumerData.setConsumerGroup(consumer.groupMetadata().groupId());
-
-            //consumerData.setMemberId(consumer.groupMetadata().memberId());
         }
 
 

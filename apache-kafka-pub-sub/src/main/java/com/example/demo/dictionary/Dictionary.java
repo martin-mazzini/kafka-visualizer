@@ -45,7 +45,7 @@ public class Dictionary {
 	}
 
 	public static Integer getRandomKey() {
-		int randomKey = random.nextInt(4);
+		int randomKey = random.nextInt(6);
 		return randomKey;
 	}
 

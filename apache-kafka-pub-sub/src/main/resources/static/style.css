@@ -86,10 +86,16 @@ table {
 
 .inactive td, .inactive th, .inactive tr{
   background-color: rgba(239, 231, 231, 0.23);
+  color: rgba(222, 222, 222, 0.91);
+}
+
+.producer td, .producer th, .producer tr {
+  background-color: #4af1de;
+  color: #000000;
 }
 
 input[type='number']{
-  width: 20px;
+  width: 50px;
 }
 
 td, th {
@@ -107,7 +113,7 @@ tr th {
   color:#fff;
 }
 
-tr:hover {
+.active tr:hover {
   background-color: #dddddd;
   cursor: pointer;
 }

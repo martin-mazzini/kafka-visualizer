@@ -37,7 +37,10 @@ public class ConsumerRunnable implements Runnable {
 
 
         System.out.println("Consumer created with THREAD NAME: " + Thread.currentThread().getName());
-        consumer.subscribe(Collections.singleton(topicName));
+
+        synchronized (consumer) {
+            consumer.subscribe(Collections.singleton(topicName));
+        }
 
 
         try {

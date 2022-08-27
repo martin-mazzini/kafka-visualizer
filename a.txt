@@ -1,13 +1,17 @@
 
-
+- repasar basics a ver si hay algo interesante
+- emprolijar codigo
+- readme.md
 - Mejorar cancelacion 
+- Bug => Concurrent Exception, parece en startup => resuelto?
+- Front end => ensanchar input type number
 - Front end => otro coor para el producer
 - Front end => eliminar todas las palabras cuando se desactiva
 - Front end => acomodar divs y espacios. Fijar altos y anchos. Achicar letras.
 - Mostrar datos extra (offset, lag)
 - Corregir nro de consumer en el front
 
-
+- Hacer plan de microservicios POC
 
 
 

@@ -98,7 +98,7 @@ function renderActiveConsumerTable(consumerTable, consumerData, button) {
     for (let record of consumerData.records) {
         recordList = recordList +
           //  record.offset + " | "
-            + record.word +  " <br/> "
+             record.word +  " <br/> "
     }
     p.innerHTML = recordList
 

@@ -41,7 +41,7 @@ To run the application, download the project and run the following command in th
 
 *docker-compose up --build*
 
-Next, navigate to http://localhost:8080/index and you will be presented with the following table on the web browser.
+Next, navigate to http://localhost:8080/index and you will be presented with the application UI.
 
 **Note:** if you are **restarting the container** after the first launch, the Kafka container will fail and restart a couple of times before the app starts working (related to this [issue)](https://github.com/wurstmeister/kafka-docker/issues/389). If you don´t want to wait, it´s better to start from scratch again. Delete the container and then build again, as follows:
 
@@ -76,8 +76,8 @@ This UI is a live visualization of a Kafka producer and Kafka consumers, writing
 
 With this diagram in mind, it´s easier to explain what each box is showing.
 
- - **Producer box**: the words that appear in this box are the messages being sent by the producer to the Kafka topic. The **Latency** box allows you to control the rate at which each message is produced. The **Use Key** checkbox decides if the producer uses a key when sending a message. If it´s checked, the producer uses the number prefixed to the word as a key when sending the record to Kafka.
- - **Consumer boxes**: similarly, the words appearing in these boxes correspond to the words being read by the respective consumer. You can stop a given consumer with the **Remove consumer** button. Inactive consumers are greyed out and can be started with the **Add consumer** button. The **Partitions** row shows the topic partitions which are currently assigned to the given consumer. The **Latency** box allows you to control the rate at which each message is being read.
+ - **Producer box**: the words that appear in this box are the messages being sent by the producer to the Kafka topic. The **Latency** box allows you to control the rate at which each message is produced (milliseconds). The **Use Key** checkbox decides if the producer uses a key when sending a message. If it´s checked, the producer uses the number prefixed to the word as a key when sending the record to Kafka.
+ - **Consumer boxes**: similarly, the words appearing in these boxes correspond to the words being read by the respective consumer. You can stop a given consumer with the **Remove consumer** button. Inactive consumers are greyed out and can be started with the **Add consumer** button. The **Partitions** row shows the topic partitions which are currently assigned to the given consumer. The **Latency** box allows you to control the rate at which each message is being read (milliseconds).
  - **Topic partitions table**: this table shows the end offset, current offset, and lag of each of the partitions.
 
 With that being said, the following sections give a little  bit more detail and context on how the UI can be used to illustrate some Kafka concepts
@@ -149,7 +149,7 @@ If the **Use key** feature is inactive, then you should notice that each partiti
 <img width="629" alt="producing_without_keys" src="https://user-images.githubusercontent.com/25701657/187058201-8ffbe569-85d5-427f-9fd4-3cc85ce13b81.png">
 
 
-Kafka doesn´t guarantee order across partitions. It only guarantees that within a particular partition, messages are going to be processed in the order they were sent. This means that all messages of a given key are going to be consumed in order because they are all going to a single partition (and can´t be consumed by more than one consumer, as explained in the Consumer groups section). This is an important feature of Kafka. A real-world example would be processing GPS data of vehicle location. In that scenario, we could imagine that receiving each car´s data in order would be useful (to track the car´s position on a map, for example), but we wouldn´t need global ordering of all the car´s positions. In that case, we could send the GPS coordinates with a car ID as the key. 
+Kafka doesn´t guarantee order across partitions. It only guarantees that within a particular partition, messages are going to be processed in the order they were sent. This means that all messages of a given key are going to be consumed in order because they are all going to a single partition (and can´t be consumed by more than one consumer, as explained in the Consumer groups section). This is an important feature of Kafka. A real-world example would be processing GPS data of vehicle location. In that scenario, we could imagine that receiving each car´s data in order would be useful (to track the car´s position on a map, for example), but we wouldn´t need global ordering of all the cars positions. In that case, we could send the GPS coordinates with a car ID as the key. 
 
 
 # Application

@@ -32,32 +32,23 @@ public class ConsumerRunnable implements Runnable {
     @Override
     public void run() {
 
-
-        System.out.println("Consumer created with THREAD NAME: " + Thread.currentThread().getName());
-
         synchronized (consumer) {
             consumer.subscribe(Collections.singleton(topicName));
         }
-
-
         try {
             while (true) {
-
                 if (Thread.currentThread().isInterrupted()) {
-                    System.out.println("thread was interrupted");
+                    
                     throw new InterruptedException();
                 }
-
                 synchronized (consumer) {
                     ConsumerRecords<String, String> records =
                             consumer.poll(Duration.ofMillis(10));
                     for (ConsumerRecord<String, String> record : records) {
-                        // System.out.println("polling from thread" + Thread.currentThread().getId());
+                        // 
                         addMessage(record);
                     }
                 }
-
-
                 Thread.sleep(latency);
             }
         } catch (WakeupException e) {
@@ -65,7 +56,7 @@ public class ConsumerRunnable implements Runnable {
         } catch (InterruptedException interruptedException) {
             logger.info("Removing consumer, interrupted exceptio");
         } catch(InterruptException e){
-            logger.info("Removing consumer, kafka interrupt exception ");
+            logger.info("Removing consumer, kafka interrupt exception");
         }  finally {
             try {
                 logger.info("Finally clause, Removing consumer");
@@ -76,7 +67,7 @@ public class ConsumerRunnable implements Runnable {
         }
 
 
-        System.out.println("LOOP EXITED for thread: " + Thread.currentThread().getId());
+        
 
 
     }
@@ -88,7 +79,6 @@ public class ConsumerRunnable implements Runnable {
 
     public List<RecordDTO> getMessages() {
         return new ArrayList<>(messages);
-
     }
 
 
@@ -100,28 +90,17 @@ public class ConsumerRunnable implements Runnable {
 
         synchronized (consumer) {
             Set<TopicPartition> assignment = consumer.assignment();
-
-            Map<TopicPartition, Long> endOffsets =consumer.endOffsets(assignment);
-
-
             for (TopicPartition topicPartition : assignment) {
                 int partition = topicPartition.partition();
                 consumerData.addPartition(partition);
-
             }
-
-
-
             consumerData.setConsumerGroup(consumer.groupMetadata().groupId());
         }
 
 
         consumerData.setLatency(latency);
         consumerData.setConsumerId(consumerId);
-
-
         return consumerData;
-
 
     }
 
@@ -130,6 +109,7 @@ public class ConsumerRunnable implements Runnable {
     }
 
 
+    //TODO use this
     /**
      * public class KafkaConsumerRunner implements Runnable {
      *      private final AtomicBoolean closed = new AtomicBoolean(false);

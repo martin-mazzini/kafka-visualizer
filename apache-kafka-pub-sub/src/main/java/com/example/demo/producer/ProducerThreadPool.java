@@ -55,6 +55,7 @@ public class ProducerThreadPool {
 
 
 
+	//currently one fixed producer for this app, but could be used
 	public synchronized boolean removeProducer(){
 		ProducerRunnableReference producer = producerRunnables.poll();
 		if (producer == null){
@@ -67,6 +68,7 @@ public class ProducerThreadPool {
 	}
 
 
+	//currently one fixed producer for this app, but could be used
 	public synchronized boolean addProducer(){
 		if (runningThreads == MAX_N_THREADS){
 			logger.info("Max number of producers");
@@ -77,16 +79,6 @@ public class ProducerThreadPool {
 			return true;
 		}
 	}
-
-
-	public synchronized void changeLatency(Long newLatency){
-		this.latency = newLatency;
-		for (ProducerRunnableReference tasks: this.producerRunnables){
-			tasks.getProducerRunnable().changeLatency(latency);
-		}
-	}
-
-
 
 
 	public synchronized List<ProducerData> getProducerData() {

@@ -27,12 +27,10 @@ public class ConsumerThreadPool {
     private static final Integer MAX_CONSUMERS = 5;
     private static ExecutorService threadPool = Executors.newFixedThreadPool(MAX_CONSUMERS);
     private Map<String, ConsumerRunnableReference> consumerRunnables = new HashMap<>();
-    private BeanFactory beanFactory;
     private ConsumerFactory consumerFactory;
 
 
-    public ConsumerThreadPool(BeanFactory beanFactory, ConsumerFactory consumerFactory) {
-        this.beanFactory = beanFactory;
+    public ConsumerThreadPool(ConsumerFactory consumerFactory) {
         this.consumerFactory = consumerFactory;
     }
 

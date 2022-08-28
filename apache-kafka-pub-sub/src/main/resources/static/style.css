@@ -6,13 +6,13 @@
 .records_divs {
   overflow-y: scroll;
   display: flex;
-  height: 200px;
+  height: 150px;
   flex-direction: column-reverse
 }
 
 body {
   background: #e6f3ff;
-  padding: 20px;
+  padding: 5px;
   font-family: Helvetica;
 }
 
@@ -61,10 +61,6 @@ button:hover {
 }
 
 
-#banner-message.alt button {
-  background: #fff;
-  color: #000;
-}
 
 
 /*
@@ -74,8 +70,10 @@ button:hover {
 }
 */
 
+.group_div {
+  font-size: 10px;
+}
 
-/* TABLA */
 .topics table, .topics tr, .topics th, .topics td{
   font-size: 15px;
   padding:3px 10px;
@@ -85,7 +83,7 @@ table {
   border-collapse: collapse;
   table-layout: fixed;
   width: 200px;
-  height: 500px;
+  height: 370px;
 }
 
 .inactive td, .inactive th, .inactive tr{

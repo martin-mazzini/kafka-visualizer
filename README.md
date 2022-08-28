@@ -4,6 +4,11 @@
 This repository contains an application to visualize Kafka producers and consumers in action, in order to play with it and illustrate some concepts. The application, including a Kafka broker, can be run with a single docker-compose command (see How to run).
 
 
+<img width="949" alt="general_prettier" src="https://user-images.githubusercontent.com/25701657/187057550-327776c4-de0e-4e5e-98af-550ff86d4cae.png">
+
+
+
+
 The UI allows you to add/remove consumers, control the latency of producer and consumers, among others. For using the app directly, see the Using the app section. That sections assumes basic familiarity with Kafka concepts. For a quick theortical explanation of some of these concepts, you can see the What is Kafka section.
 
 # Using the app
@@ -12,9 +17,15 @@ The UI allows you to add/remove consumers, control the latency of producer and c
 
 To run the application, download the project and run the following command in the root folder of the project.
 
-docker-compose up --build
+*docker-compose up --build*
 
 Next, navigate to http://localhost:8080/index and you will be presented with the following table on the web browser.
+
+**Important note:** if you are **restarting the container** after the first launch, the Kafka container will fail and restart a couple of times before the app starts working (related to this [issue)](https://github.com/wurstmeister/kafka-docker/issues/389). If you don´t want to wait, it´s better to start from scratch again. Delete the container and then build again, as follows:
+
+*docker-compose rm -svf*
+
+*docker-compose up --build*
 
 ## What exactly does the docker-compose.yml file include?
 
@@ -31,12 +42,17 @@ When you build and run the docker-compose.yml, the following happens.
 
 When you start the application, you are presented with the following screen.
 
+<img width="950" alt="general" src="https://user-images.githubusercontent.com/25701657/187057600-ea1492dd-468a-44d8-848f-03c0dca9ffeb.png">
+
 
 This UI is a live visualization of a Kafka producer and Kafka consumers, writing to one topic with four partitions, according to the following diagram.
 
+<img width="938" alt="kafkas_diagram" src="https://user-images.githubusercontent.com/25701657/187057614-e5699e72-f05e-4bba-8f0b-148f77f92aa4.png">
 
 
-With this diagram in mind, it´s easy to explain what each box is showing.
+
+
+With this diagram in mind, it´s easier to explain what each box is showing.
 
  - **Producer box**: the words that appear in this box are the messages being sent by the producer to the Kafka topic. The **Latency** box allows you to control the rate at which each message is produced. The **Use Key** checkbox decides if the producer uses a key when sending message. If it´s checked, the producer uses the number prefixed to the word as a key when sending the record to Kafka.
  - **Consumer boxes**: in a similar way, the words appearing in these boxes correspond to the words being read by the respective consumer. You can stop a given consumer with the **Remove consumer** button. Inactive consumers are greyed out, and can be started with the **Add consumer** button. The **Partitions** row show the topic partitions which are currently assigned to the given consumer. The **Latency** box allows you to control the rate at which each message is being read.
@@ -62,16 +78,20 @@ Note that if you turn on the 5 consumers at the same time, one of them will be i
 Consumer groups allows you to control if you use Kafka as a **Distributed Queue** or as a **Publish / Subscribe** service.
 
 •  If you want to implement a **Distributed Queue** (each message processed a single time by a single service) you should put all consumers in the same consumer-group. Having multiple consumers in this case will only allow paralell processing, but each message will get processed only once (ignoring duplicate message related to the at-least-one semantics guarantees). **This is the example shown in this application**
+
 •  If you want to implement Pub/Sub (one message being broadcasted to multiple services), you would need to create different consumer groups, one for each service. Of course, you can also add multiple consumers in this consumer groups, for paralell processing.
 
 
 
 ### Througphut
 
-You can play with different amount of active consumers and producer in combination with different consumer and producer latencies, to see how they affect the resulting throughput, and the lag of each partition (see following section).
+You can play with different amount of active consumers in combination with different producer and consumer latencies, to see how they affect the resulting throughput and the lag of each partition. The following is an example of a possible configuration which produces some lagging partitions because of different latency values in each consumer, just after a couple of minutes.
+
+<img width="623" alt="different_offsets" src="https://user-images.githubusercontent.com/25701657/187057723-703b3877-f6a8-45b5-82be-fd86014f397e.png">
+
 
 The **Latency** input field controls how long each producer or consumer takes to publish or consume one single message, respectively. 
-As a side note, Java Kafka consumers normally poll multiple messages at once when they call the poll() method. In this application, the max amount of messages fetched has been limited to 1, so that the configured **Latency** stays consistent.
+As a side note, Java Kafka consumers normally poll multiple messages at once when they call the poll() method. In this application, the max amount of messages fetched has been limited to 1, so that the configured **Latency** stays consistent and is applied per one message.
 
 ### Offsets and lag
 
@@ -87,17 +107,22 @@ When using the Java consumer API (as in this application), by default consumers 
 
 ### Message ordering and keys
 
-The checkbox **Use key** allows you to toggle between sending messages with or without keys. For each word, it's key is the single digit which prepended to it (varying between 0 and 5). 
+The checkbox **Use key** allows you to toggle between sending messages with or without keys. The key is the single digit which is prepended to each word (varying between 0 and 5). If you see "5-science", this means the message with the word "science" was sent with the key 5. If a key is provided, then all messages of that key go to the same partition (key is hashed and determines the target partition). If you don´t, then its assigned randomly (in a round robin fashion).
 
-If the **Use key** feature is active, you should notice that each partition receives a subset of words that with the same key. In this example below, partition 1 is receiving words with keys 0,1, and partition 2 is receibing keys 2,3,4. Kafka will guarantee that all the messages sent for each key are processed in order. 
+If the **Use key** feature is active, you should notice that each partition receives a subset of words with the same key. In the example below, consumer 1 is receiving only words with keys 2 and 4. Because it was assigned partitions 0 and 1, we know that keys 2 and 4 must be going to these partitions. Consumer 2 is receiving key 5 in partition 2. Lastly, consumer 3 is receiving key 1 and 3 in partition 3. 
 
-A real case scenario would be keys representing the id of a car, and messages with its position. In this case, because the order is guaranteed for each car, the 
+<img width="627" alt="producing with keys" src="https://user-images.githubusercontent.com/25701657/187057763-020221a6-888c-44db-96b2-39e4b3349c0e.png">
 
-Two important Kafka features must be mentioned.
-Kafka guarantees Messages withtin each partition are ordered. Order is guaranteed only within a partition, not across partitions. If you want global order, then you can only have one partition.
-When you write to a topic, data is assigned randomly to a partition unless a key is provided (it is sent round robin). If a key is provided, then all messages of that key go to the same partition (key is hashed and determines the target partition). Data is read in order (from low to high offset) within each partition.
+If the **Use key** feature is inactive, then you should notice that each partition receives messages that can contain any key, like the example below.
+
+<img width="629" alt="producing_without_keys" src="https://user-images.githubusercontent.com/25701657/187058201-8ffbe569-85d5-427f-9fd4-3cc85ce13b81.png">
+
+
+Kafka doesn´t guarantee order across partitions. It only guarantees that within a particular partition, messages are going to be processed in the order they were sent. This means that all messages of a given key are going to be consumed in order, because they are all going to a single partition. This is an important feature of Kafka. A real world example would be sending cars with GPS data. In that scenario, we could imagine that receiving the messages in order for each car would be useful (to track the car´s position in a map, for example), but we wouldn´t need global ordering of all the car´s positions. In that case, we could send the GPS coordinates with a car ID as the key. 
+
+### Hot partitions
 
 ### Rebalancing
 When you add or remove a partition, you could see that the partitions assigned to each consumer dissapear for a brief period of time.
 
-### Hot partitions
+

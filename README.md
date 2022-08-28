@@ -19,7 +19,7 @@ This document has two sections and assumes some basic familiarity with Kafka. If
   - [How to run?](#how-to-run)
   - [What exactly does the docker-compose.yml file include?](#what-exactly-does-the-docker-composeyml-file-include)
   - [How to use the visualizer?](#how-to-use-the-visualizer)
-    - [What is the UI actually showing?](#what-is-the-ui-actually-showing)
+  - [What is the UI actually showing?](#what-is-the-ui-actually-showing)
   - [Consumer groups and topic partitions](#consumer-groups-and-topic-partitions)
   - [Partitions as a unit of parallelism](#partitions-as-a-unit-of-parallelism)
   - [Pub/Sub vs Queue](#pubsub-vs-queue)
@@ -60,7 +60,7 @@ When you build and run the docker-compose.yml, the following happens.
 
 ## How to use the visualizer?
 
-### What is the UI actually showing?
+## What is the UI actually showing?
 
 When you start the application, you are presented with the following screen.
 

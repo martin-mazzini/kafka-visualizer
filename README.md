@@ -1,15 +1,14 @@
 
 # What is this?
 
-This repository contains an application to visualize Kafka producers and consumers in action, play with it and illustrate some concepts. The application, including a Kafka broker, can be run with a single docker-compose command.
+This repository contains an application to visualize Kafka producers and consumers in action, play with them and illustrate some concepts related to Kafka. The UI allows you to add/remove consumers and control their latency, among others. The application, including a Kafka broker, can be run with a single docker-compose command.
 
 
 <img width="949" alt="general_prettier" src="https://user-images.githubusercontent.com/25701657/187057550-327776c4-de0e-4e5e-98af-550ff86d4cae.png">
 
-The UI allows you to add/remove consumers, and control the latency of producers and consumers, among others. 
-This document has two sections and assumes some basic familiarity with Kafka. The following link is a good introduction: https://medium.com/inspiredbrilliance/kafka-basics-and-core-concepts-5fd7a68c3193
- -  To interact with the UI and learn what you can do with it, see the Using the app section. That section assumes basic familiarity with Kafka concepts. 
- -  Some notes about how the app works and writing Java code to interact with Kafka.
+This document has two sections and assumes some basic familiarity with Kafka. If you are new to it, the following link is a good introduction:  [kafka intro](https://medium.com/inspiredbrilliance/kafka-basics-and-core-concepts-5fd7a68c3193)
+ -  To interact with the UI and learn what you can do with it, see the **Using the app** section. 
+ -  The **Application section** contains some brief notes about the Java Kafka client and how the app works.
 
 
 # Table of contents
@@ -43,7 +42,7 @@ To run the application, download the project and run the following command in th
 
 Next, navigate to http://localhost:8080/index and you will be presented with the following table on the web browser.
 
-**Important note:** if you are **restarting the container** after the first launch, the Kafka container will fail and restart a couple of times before the app starts working (related to this [issue)](https://github.com/wurstmeister/kafka-docker/issues/389). If you don´t want to wait, it´s better to start from scratch again. Delete the container and then build again, as follows:
+**Note:** if you are **restarting the container** after the first launch, the Kafka container will fail and restart a couple of times before the app starts working (related to this [issue)](https://github.com/wurstmeister/kafka-docker/issues/389). If you don´t want to wait, it´s better to start from scratch again. Delete the container and then build again, as follows:
 
 *docker-compose rm -svf*
 
@@ -80,46 +79,53 @@ With this diagram in mind, it´s easier to explain what each box is showing.
  - **Consumer boxes**: similarly, the words appearing in these boxes correspond to the words being read by the respective consumer. You can stop a given consumer with the **Remove consumer** button. Inactive consumers are greyed out and can be started with the **Add consumer** button. The **Partitions** row shows the topic partitions which are currently assigned to the given consumer. The **Latency** box allows you to control the rate at which each message is being read.
  - **Topic partitions table**: this table shows the end offset, current offset, and lag of each of the partitions.
 
-**Note:** if you use the "Latency" feature, take into account that it's implemented with a simple Thread.sleep(), without notifying threads of changes in its value. This means that if you set a really high time (like minutes), and then reduce it, you will have to wait for it to elapse so that the thread resumes and starts processing with the new latency value.
+With that being said, the following sections give a little  bit more detail and context on how the UI can be used to illustrate some Kafka concepts
 
-The following sections details how the UI can be used to illustrate some interesting Kafka concepts
+**Note:** if you use the "Latency" feature, take into account that it's implemented with a simple Thread.sleep(), without notifying threads of changes in its value. This means that if you set a really high time (like minutes), and then reduce it to milliseconds, you will have to wait for the period to elapse so that the thread resumes and starts processing with the new latency value.
+
+
 
 ## Consumer groups and topic partitions 
 
-All the consumers in the app are part of the same consumer group (“group-one”). Consumer groups control how partitions are assigned to consumers. The rules are as follows:
+All the consumers in the app are part of the same consumer group (“group-one”). In Kafka, consumer groups control how partitions are assigned to consumers. The rules are as follows:
 
  - All consumers must belong to a consumer group.
- - Each consumer within a group reads from exclusive partitions (one consumer can read from multiple partitions, but each partition is read only by one consumer)
+ - All partitions are read by the consumer group.
+ - Each consumer within a group reads from exclusive partitions (one consumer can read from multiple partitions, but each partition is read only by one consumer). This rule is illustrated in the below diagram.
+
+![image](https://user-images.githubusercontent.com/25701657/187061049-a924bdc1-16eb-4616-83bc-ac77a95b833e.png)
+
  
 By using the  **Add consumer** and **Remove consumer** buttons, you can see how partitions get re-assigned between the active consumers. This process of moving partitions across consumers is known as **Partition Rebalance**. Partitions assigned to the respective consumer are shown in the **Partitions** row. Kafka will always try to spread the partitions across different consumers (depending on the assignment strategy, you can read more about it here => [kafka-partition-assignment-strategies)](https://medium.com/streamthoughts/understanding-kafka-partition-assignment-strategies-and-how-to-write-your-own-custom-assignor-ebeda1fc06f3)
 
-## Partitions as a unit of parallelism
+## Partitions as the unit of parallelism
 
-Note that if you turn on the 5 consumers at the same time, one of them will be idle, as shown below. In that sense, the amount of partitions limits the maximum amount of concurrent consumers and is therefore the main unit of parallelism in Kafka. Kafka supports increasing the partition number after topic creation, but not decreasing it.
+Note that if you turn on the 5 consumers at the same time, one of them will be idle. In that sense, the amount of partitions limits the maximum amount of concurrent consumers and is therefore the main unit of parallelism in Kafka. Kafka supports increasing the partition number after topic creation, but not decreasing it. 
 
 ## Pub/Sub vs Queue
 
-Consumer groups allow you to control if you use Kafka as a **Distributed Queue** or as a **Publish / Subscribe** service.
+Consumer groups allow you to use Kafka as a **Distributed Queue** or as a **Publish / Subscribe** service.
 
-•  If you want to implement a **Distributed Queue** (each message processed a single time by a single service) you should put all consumers in the same consumer group. Having multiple consumers, in this case, will only allow parallel processing, but each message will get processed only once (ignoring duplicate messages related to the at-least-once semantics guarantees). **This is the example shown in this application**
+•  If you want to implement a **Distributed Queue** (each message processed a single time by a single service) you should put all consumers in the same consumer group. Having multiple consumers, in this case, will only allow parallel processing, but each message will get processed only once*. **This is the case for this application**
 
 •  If you want to implement Pub/Sub (one message being broadcasted to multiple services), you would need to create different consumer groups, one for each service. Of course, you can also add multiple consumers in these consumer groups, for parallel processing.
 
+![image](https://user-images.githubusercontent.com/25701657/187061218-a158999e-0963-4191-961a-5c1c5bd42045.png)
 
+
+*Only once, if we don´t consider the possibility of receiving duplicate messages, in case of at-least-once semantics.
 
 ## Throughput
 
-You can play with different amounts of active consumers in combination with different producer and consumer latencies, to see how they affect the resulting throughput and the lag of each partition. The following is an example of a possible configuration that produces some lagging partitions because of different latency values in each consumer, just after a couple of minutes.
+You can play with different amounts of active consumers in combination with different producer and consumer latencies, to see how they affect the resulting throughput and the lag of each partition. The following is an example of a possible configuration that produces some lagging partitions because of different latency values in each consumer, just after a couple of minutes. Partition 3, with a latency of 10 seconds, has the highest lag. 
 
 <img width="623" alt="different_offsets" src="https://user-images.githubusercontent.com/25701657/187057723-703b3877-f6a8-45b5-82be-fd86014f397e.png">
-
-
 
 
 ## Offsets and lag
 
 In Kafka, each message within a partition gets an incremental id, called **offset**.
-In addition, for each consumer group, Kafka stores the last offsets at which it has been reading, for every partition. When a consumer has finished processing data, it should periodically commit the offsets. This allows Kafka to know up until what point a consumer has successfully read a partition. If the consumer dies, it will be able to read back from where it left thanks to the committed offsets. In this application, you can test this by removing and starting one consumer, and simply verifying that it doesn´t replay old data. If you wanted to replay old data, you would do it by resetting offsets, which would allow you to read from the beginning of the topic or any given offset.
+In addition, for each topic being read by a consumer group, Kafka stores the last offsets at which it has been reading, for every partition of the said topic. When a consumer has finished processing data, it should periodically commit the offsets. This allows Kafka to know up until what point a consumer has successfully read a partition. If the consumer dies, it will be able to read back from where it left thanks to the committed offsets. In this application, you can test this by removing and starting one consumer, and simply verifying that it doesn´t replay old data. If you wanted to replay old data, you would do it by resetting offsets, which would allow you to read from the beginning of the topic or any given offset.
 
 The table **Topic partitions** shows the end offset for each partition, and also the current offset at which the consumer group has been reading. The difference between the two is the **lag**, which represents how “far behind” the consumer group is.
 
@@ -162,4 +168,4 @@ When you poll for messages, you send a timeout. If there are records available, 
 
 ## When does the Java consumer commit offsets?
 
-When using the Java consumer API (as in this application), by default consumers will commit offsets automatically **after** the message is processed. This results in an  **at-least-once** semantic, and consumers should therefore be idempotent. With auto-commit, consumers commit the offsets when they call the poll() method after some configurable time window has elapsed. This is why you should be sure all messages have successfully been processed before calling the poll method again (or accept possible data loss). Alternatively, offsets can be manually committed (by disabling auto-commit configuration and calling the respective method).
+When using the Java consumer API (as in this application), by default consumers will commit offsets automatically **after** the message is processed. This results in an  **at-least-once** semantic, and consumers should therefore be idempotent. With auto-commit, consumers commit the offsets when they call the poll() method after some configurable time window has elapsed. This is why you should be sure all messages have successfully been processed before calling the poll method again (or accept possible data loss). Alternatively, offsets can be manually committed (by disabling the auto-commit configuration and calling the respective method).

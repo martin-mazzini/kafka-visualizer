@@ -11,6 +11,28 @@ This document has two sections and assumes some basic familiarity with Kafka. Th
  -  To interact with the UI and learn what you can do with it, see the Using the app section. That section assumes basic familiarity with Kafka concepts. 
  -  Some notes about how the app works and writing Java code to interact with Kafka.
 
+
+# Table of contents
+
+- [What is this?](#what-is-this)
+- [Using the app](#using-the-app)
+  - [How to run?](#how-to-run)
+  - [What exactly does the docker-compose.yml file include?](#what-exactly-does-the-docker-composeyml-file-include)
+  - [How to use the visualizer?](#how-to-use-the-visualizer)
+    - [What is the UI actually showing?](#what-is-the-ui-actually-showing)
+  - [Consumer groups and topic partitions](#consumer-groups-and-topic-partitions)
+  - [Partitions as a unit of parallelism](#partitions-as-a-unit-of-parallelism)
+  - [Pub/Sub vs Queue](#pubsub-vs-queue)
+  - [Throughput](#throughput)
+  - [Offsets and lag](#offsets-and-lag)
+  - [Message ordering and keys](#message-ordering-and-keys)
+- [Application](#application)
+  - [How does the app work?](#how-does-the-app-work)
+  - [Multi-threaded consumers](#multi-threaded-consumers)
+  - [Polling for  messages](#polling-for--messages)
+  - [When does the Java consumer commit offsets?](#when-does-the-java-consumer-commit-offsets)
+
+
 # Using the app
 
 ## How to run?

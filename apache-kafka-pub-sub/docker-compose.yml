@@ -10,12 +10,12 @@ services:
     depends_on:
       - kafka
   zookeeper:
-    image: 'bitnami/zookeeper:latest'
+    image: 'bitnami/zookeeper:3.8'
     environment:
       -  ALLOW_ANONYMOUS_LOGIN=yes
       -  ALLOW_PLAINTEXT_LISTENER=yes
   kafka:
-    image:  'bitnami/kafka:latest'
+    image:  'bitnami/kafka:3.2'
     restart: always
     ports:
      - '9093:9093'
